@@ -35,7 +35,7 @@
 <?php foreach ($obj as $d) {?>
 <tr>
   <td colspan="100" class="td_99_t">
-    <a href="/Salon/City/index/<?=$d->prefecture?>/" >　　　　<?=$d->prefecture?></a>
+    <?=$d->city?>
   </td>
 </tr>
 <?php } ?>

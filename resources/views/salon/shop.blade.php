@@ -33,11 +33,62 @@
 
 <table>
 <?php foreach ($obj as $d) {?>
-<tr>
+<tr><th style="width:30%;">サロン名</th>
   <td colspan="100" class="td_99_t">
-    <a href="/Salon/City/index/<?=$d->prefecture?>/" >　　　　<?=$d->prefecture?></a>
+    <?=$d->salon_name?>
   </td>
 </tr>
+<tr><th>アドレス</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->address?>
+  </td>
+</tr>
+<tr><th>行き方</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->way?>
+  </td>
+</tr>
+<tr><th>電話番号</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->tel?>
+  </td>
+</tr>
+<tr><th>座席</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->seat_text?>
+  </td>
+</tr>
+<tr><th>休業日</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->off_day?>
+  </td>
+</tr>
+<tr><th>営業時間</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->opentime_text?>
+  </td>
+</tr>
+<tr><th>カット料金</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->price_text?>
+  </td>
+</tr>
+<tr><th>カット料金</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->price_text?>
+  </td>
+</tr>
+<tr><th>備考</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->note?>
+  </td>
+</tr>
+<tr><th>駐車場</th>
+  <td colspan="100" class="td_99_t">
+    <?=$d->car_parking_text?>
+  </td>
+</tr>
+<tr><td style="text-decoration: overline;">　</td><td style="text-decoration: overline;">　</td></tr>
 <?php } ?>
 </table>
 </div>

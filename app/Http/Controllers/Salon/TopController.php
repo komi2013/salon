@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class TopController extends Controller {
 
-    public function index(Request $request, $directory, $controller, $action) {
+    public function index(Request $request, $directory=null, $controller=null, $action=null) {
         $obj = DB::select("SELECT * FROM prefecture ORDER BY prefecture_id ASC");
         
         return view('salon.top', compact('obj'));
