@@ -11,50 +11,12 @@ class RiyouController extends Controller {
     public function index(Request $request) {
         set_time_limit(0);
         ini_set('memory_limit', '1500M');
-        $obj = DB::select("SELECT * FROM salon_riyou2 WHERE salon_id > 339904 AND address <> '' ORDER BY salon_id ASC LIMIT 100000");
+        $obj = DB::select("SELECT * FROM salon_riyou2 WHERE salon_id > 0 AND prefecture = '' ORDER BY salon_id ASC LIMIT 1000000");
         foreach ($obj as $d1) {
             $arr = [];
-            die($d1->riyou_tag);
-            $html = str_get_html($d1->riyou_tag);
-            $tag = $html->find( 'strong' ); //1000円
-//            echo $tag[0]->plaintext.'<br>';
-            if (isset($tag[0]->plaintext)) {
-               $arr['price_text'] = str_replace("&nbsp;", "", $tag[0]->plaintext); 
-            }
-            
-
-
-//            $tag = $html->find( '.shopname' );
-//            echo $tag[0]->plaintext.'<br>';
-            $tag = $html->find( 'a' );
-            foreach ($tag as $d2) {
-                if(strpos($d2->innertext,'駅') !== false){
-//                    echo $d2->innertext.'<br>';
-                    if (isset($arr['way'])) {
-                        $arr['way'] .= str_replace("&nbsp;", "", $d2->innertext);
-                    } else {
-                        $arr['way'] = str_replace("&nbsp;", "", $d2->innertext);
-                    }
-                }
-            }
-            $tag = $html->find( 'dt' );
-            $tag2 = $html->find( 'dd' );
-
-            foreach ($tag as $k => $d2) {
-                if(strpos($d2->innertext,'営業時間') !== false){
-//                    echo $tag2[$k]->innertext.'<br>';
-                    $arr['opentime_text'] = str_replace("&nbsp;", "", $tag2[$k]->innertext);
-                }
-                if(strpos($d2->innertext,'定休日') !== false){
-//                    echo $tag2[$k]->innertext.'<br>';
-                    $arr['off_day'] = str_replace("&nbsp;", "", $tag2[$k]->innertext);
-                }
-                if(strpos($d2->innertext,'住所') !== false){
-//                    echo $tag2[$k]->innertext.'<br>';
-                    $arr['address'] = str_replace("&nbsp;", "", $tag2[$k]->innertext);
-                }
-            }
-
+            $html = file_get_html($d1->tel_href);
+            $tag = $html->find( '.dlgroup' ); //info
+            $arr['prefecture'] = $tag[1]->outertext;
             DB::table('salon_riyou2')
                 ->where('salon_id', $d1->salon_id)
                 ->update($arr);
