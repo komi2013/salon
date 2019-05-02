@@ -9,14 +9,25 @@ use Carbon\Carbon;
 class TopController extends Controller {
 
     public function index(Request $request, $directory=null, $controller=null, $action=null) {
-        
-        $now = Carbon::now();
-        echo '現在: ' . $now . '<br>';
-        die();
-        
-        $obj = DB::select("SELECT * FROM prefecture ORDER BY prefecture_id ASC");
-        
-        return view('salon.top', compact('obj'));
+
+        $today = Carbon::today();
+        $today = Carbon::parse('2015-07-07');
+        $tempDate = Carbon::createFromDate($today->year, $today->month, 1);
+        $skip = $tempDate->dayOfWeek;
+
+        for($i = 0; $i < $skip; $i++) {
+            $tempDate->subDay();
+        }
+
+        $arr_35days = [];
+        while($tempDate->month <= $today->month) {
+            for($i=0; $i < 7; $i++) {
+                $arr_35days[$tempDate->format('Y-m-d_D')] = [];
+                $tempDate->addDay();            
+            }
+        }
+
+        return view('calendar.top', compact('arr_35days'));
         
     }
 }
