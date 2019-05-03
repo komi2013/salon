@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>美容室、理容店、サロン検索</title>
+    <title>My Calendar</title>
     <meta name="description" content="美容室、理容店、サロン検索">
     <meta name="google-site-verification" content="" />
 
@@ -25,10 +25,9 @@
 
 <div id="content">
     <style>
-/*        .date{
-            padding: 10px 0px 0px 10px;
-            font-size: 10px;
-        }*/
+        .offwork{
+            color:orange;
+        }
         th {
             font-size:10px;
             width: 14.28%;
@@ -37,10 +36,11 @@
         td {
             text-align: center;
             font-size: 10px;
+            padding: 20px 0px 10px 0px;
         }
     </style>
-<table border="1" class = "w3-table w3-boarder w3-striped">
-    <thead><tr class="w3-theme">
+<table>
+    <thead><tr>
     <th>Sun</th>
     <th>Mon</th>
     <th>Tue</th>
@@ -50,20 +50,31 @@
     <th>Sat</th>
     </tr></thead>
     <?php foreach ($arr_35days as $k => $d) {?>
-        <?php if(strpos($k, 'Sun')){?> <tr> <?php }?>
-        <td><?=$d[0]?></td>
-        <?php if(strpos($k, 'Sat')){?> </tr> <?php }?>
+        <?php if($d['day'] == 'Sun'){?> <tr> <?php }?>
+        <td class="date<?=$d['css_class']?>" date="<?=$k?>"><?=$d['j']?></td>
+        <?php if($d['day'] == 'Sat'){?> </tr> <?php }?>
     <?php } ?>
 </table>
+
+    
+
 </div>
 
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
 <script>
+var param = {
+  month : '<?=$month?>'
+};
+$.get('/Calendar/My/index/<?=$month?>/',param,function(){},"json")
+.always(function(res){
+    console.log(res);
+  if(res[0]==1){
 
-</script>
+  }else if(res[0]==2){
+  }
+});
 
-<script>
   $(function(){ $(function(){ ga('send', 'pageview'); }); });
 </script>
 </body>
