@@ -25,8 +25,18 @@
 
 <div id="content">
     <style>
-        .date{
-            padding: 20px;
+/*        .date{
+            padding: 10px 0px 0px 10px;
+            font-size: 10px;
+        }*/
+        th {
+            font-size:10px;
+            width: 14.28%;
+            
+        }
+        td {
+            text-align: center;
+            font-size: 10px;
         }
     </style>
 <table border="1" class = "w3-table w3-boarder w3-striped">
@@ -41,7 +51,7 @@
     </tr></thead>
     <?php foreach ($arr_35days as $k => $d) {?>
         <?php if(strpos($k, 'Sun')){?> <tr> <?php }?>
-            <td><span class="date"><?=$k?></span></td>
+        <td><?=$d[0]?></td>
         <?php if(strpos($k, 'Sat')){?> </tr> <?php }?>
     <?php } ?>
 </table>

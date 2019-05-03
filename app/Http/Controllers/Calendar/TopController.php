@@ -8,10 +8,11 @@ use Carbon\Carbon;
 
 class TopController extends Controller {
 
-    public function index(Request $request, $directory=null, $controller=null, $action=null) {
+    public function index(Request $request, $directory=null, $controller=null, 
+            $action=null, $month=null) {
 
         $today = Carbon::today();
-        $today = Carbon::parse('2015-07-07');
+        $today = $month ? Carbon::parse($month.date('-d')) : Carbon::today();
         $tempDate = Carbon::createFromDate($today->year, $today->month, 1);
         $skip = $tempDate->dayOfWeek;
 
@@ -22,7 +23,7 @@ class TopController extends Controller {
         $arr_35days = [];
         while($tempDate->month <= $today->month) {
             for($i=0; $i < 7; $i++) {
-                $arr_35days[$tempDate->format('Y-m-d_D')] = [];
+                $arr_35days[$tempDate->format('Y-m-d-D')] = [$tempDate->format('j')];
                 $tempDate->addDay();            
             }
         }
