@@ -8,18 +8,15 @@ use Illuminate\Support\Facades\DB;
 class ShopController extends Controller {
 
     public function index(Request $request,$directory,$controller,$action,$prefecture,$city) {
+        $bind = [
+            'city' => $city
+        ];
 
-        $obj = DB::select("SELECT * FROM salon WHERE address like '%".$prefecture."%' AND address like '%".$city."%'");
+        $obj = DB::select("SELECT * FROM salon WHERE city = :city", $bind);
         
         $arr = [];
         $count = 0;
-        foreach ($obj as $d1) {
-            DB::table('salon')
-                ->where('salon_id', $d1->salon_id)
-                ->update([
-                    'prefecture' => $prefecture,
-                    'city' => $city
-                ]);
+        foreach ($obj as $d) {
             $count++;
         }
 
