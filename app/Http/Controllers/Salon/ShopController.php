@@ -13,7 +13,13 @@ class ShopController extends Controller {
         
         $arr = [];
         $count = 0;
-        foreach ($obj as $d) {
+        foreach ($obj as $d1) {
+            DB::table('salon')
+                ->where('salon_id', $d1->salon_id)
+                ->update([
+                    'prefecture' => $prefecture,
+                    'city' => $city
+                ]);
             $count++;
         }
 

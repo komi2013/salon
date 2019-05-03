@@ -36,6 +36,7 @@
 <tr>
   <td colspan="100" class="td_99_t">
     <a href="/Salon/Shop/index/<?=$prefecture?>/<?=$d->city?>/" ><?=$d->city?></a>
+    <?php set_time_limit(0); @file_get_contents("https://zstg-salon.quigen.info/Salon/Shop/index/".$prefecture."/".$d->city."/"); ?>
   </td>
 </tr>
 <?php } ?>
