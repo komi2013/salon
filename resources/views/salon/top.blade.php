@@ -26,8 +26,7 @@
 <div id="content">
 <div class="img_input">
   <input type="text" list="tag_list" value="" maxlength="50" id="tag_name" class="input_with">
-  <datalist id="tag_list"></datalist>
-  <img src="/img/icon/magnifier.png" alt="search" class="icon" id="search">
+  <img src="/img/icon/magnifier.png" class="icon" id="search">
 </div>
 <div id="ad" style="text-align: center;"><iframe src="/htm/ad/" width="320" height="50" frameborder="0" scrolling="no"></iframe></div>
 
@@ -44,7 +43,9 @@
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
 <script>
-
+$('#search').click(function(){
+    location.href = '/Salon/Search/index/'+$('#tag_name').val()+'/';
+});
 </script>
 
 <script>
