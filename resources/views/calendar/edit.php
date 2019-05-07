@@ -27,6 +27,15 @@
 
     </style>
     <div style="width:100%;text-align: center;">
+        <select name='tag' style="height:30px;width:80%;">
+            <option>タグ</option>
+            <option style="background-color:rgba(0,0,255,0.2);">会議</option>
+            <option style="background-color:rgba(0,0,255,0.2);">休み</option>
+            <option style="background-color:rgba(0,0,255,0.2);">外出</option>
+            <option style="background-color:rgba(0,0,255,0.2);">タスク</option>
+            <option style="background-color:rgba(0,0,255,0.2);">シフト</option>
+        </select><br>
+var tag_color = ['','rgba(0,0,255,0.2)','rgba(0,128,0,0.2)','rgba(255,255,0,0.2)','rgba(255,0,0,0.2)','rgba(128,0,128,0.2)'];
         <input type="text" placeholder="タイトル" value="" style="height:50px;width:80%;">
     </div>
     <div style="width:100%;text-align: center;">
@@ -57,16 +66,51 @@
     <textarea style="width:90%;height:120px;"></textarea>
     </div>
 <div id="content">
-    <div style="width:80%;height:120px;border:1px solid #000000;margin:5px;overflow: scroll;">
-    <template v-for="(d,k) in join_usrs">
-        <div>{{d}}</div>
-    </template>
+    <div style="width:100%;text-align: center;">
+    <div style="width:100%;display:inline-block;">
+        <select style="height:30px;width:80%;">
+            <option>所属グループ</option>
+            <option v-for="(d,k) in group_usrs">
+                {{d[1]}}
+            </option>
+        </select><br>
+        <input type="text" placeholder="ユーザー検索" style="height:40px;"><img src="/img/icon/magnifier.png" class="icon">
     </div>
-    <div style="width:80%;height:120px;border:1px solid #000000;margin:5px;overflow: scroll;">
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+        <div>候補者</div>
     <template v-for="(d,k) in group_usrs">
-        <div>{{d}}</div>
+        <div style="margin:10px;">
+            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+            <div style="width:10%;display:inline-block;">
+                <input type="checkbox"　v-bind:value="d" v-model="join_usrs" v-id="d[0]">
+            </div></div>
     </template>
     </div>
+    <div style="width:100%;">↓</div>
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+    <template v-for="(d,k) in reverseUsrs">
+        <div>{{d[1]}}</div>
+    </template>
+        <div>参加者</div>
+    </div>
+    </div>
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+    <template v-for="(d,k) in group_facility">
+        <div style="margin:10px;">
+            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+            <div style="width:10%;display:inline-block;">
+                <input type="checkbox"　v-bind:value="d" v-model="join_usrs" v-id="d[0]">
+            </div></div>
+    </template>
+    </div>
+    <div style="width:100%;text-align:center;">↓</div>
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+    <template v-for="(d,k) in join_facility">
+        <div>{{d[1]}}</div>
+    </template>
+    </div>
+    <br>
+    <input type="button" id="checkArr">
 </div>
 
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
@@ -85,11 +129,15 @@ var obj = {
 var content = new Vue({
   el: '#content',
   data: {
-      join_usrs:['test1','test2','test2','test2','test2','test2','test2','test2','test2','test2','test2','test2','test2']
-      ,group_usrs:['test3','test4','test4','test4']
+      join_usrs:[]
+      ,group_usrs:[['11','test1'],['12','test2'],['13','test3'],['14','test4'],['15','test5'],['16','test6'],['17','test7']]
+      ,join_facility:[]
+      ,group_facility:[]
   },
   computed: {
-
+    reverseUsrs() {
+        return this.join_usrs.slice().reverse();
+    },
   }
 });
 var today = '';
@@ -173,6 +221,10 @@ function showDetail(d,date){
     }
 
 }
+$('#checkArr').click(function(){
+    console.log(content.join_usrs);
+    console.log(content.join_usrs[0][0]);    
+});
 //$(function(){ ga('send', 'pageview'); });
 </script>
 </body>

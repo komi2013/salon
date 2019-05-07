@@ -60,7 +60,7 @@ class ScheduleController extends Controller {
             }
         }
         $today = date('Y-m-d');
-        return view('calendar.top', compact('arr_35days','month','today'));
+        return view('calendar.top', compact('arr_35days','month','today','tags'));
         
     }
 }
