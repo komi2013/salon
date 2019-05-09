@@ -10,58 +10,28 @@ class ScheduleController extends Controller {
 
     public function edit(Request $request, $directory=null, $controller=null, 
             $action=null, $date=null, $id=null) {
-        return view('calendar.edit', compact('date'));
-    }
-    public function index(Request $request, $directory=null, $controller=null, 
-            $action=null, $month=null) {
-        
-        $today = Carbon::today();
-        $today = $month ? Carbon::parse($month.date('-d')) : Carbon::today();
-        $month = $today->format('Y-m');
-
-        $tempDate = Carbon::createFromDate($today->year, $today->month, 1);
-        $skip = $tempDate->dayOfWeek;
-
-        for($i = 0; $i < $skip; $i++) {
-            $tempDate->subDay();
-        }
-        $begin = $tempDate->format('Y-m-d 00:00:00');
-        $arr_35days = [];
-        while($tempDate->month <= $today->month) {
-            for($i=0; $i < 7; $i++) {
-                $arr['j'] = $tempDate->format('j');
-                $arr['day'] = $tempDate->format('D');
-                $arr['css_class'] = '';
-                if ( in_array($tempDate->format('D'), ['Sun','Sat']) ) {
-                    $arr['css_class'] = ' offwork';
-                }
-                $arr_35days[$tempDate->format('Y-m-d')] = $arr;
-                $tempDate->addDay();            
-            }
-        }
-        $end = $tempDate->format('Y-m-d 00:00:00');
         $bind = [
-            'usr_id' => 1
-            ,'begin' => $begin
-            ,'end' => $end
-        ];
-
-        $obj = DB::select("SELECT time_start FROM t_schedule WHERE usr_id = :usr_id "
-                . "AND time_end > :begin AND time_start < :end", $bind);
-        $arr_holidays = [];
+            'usr_id' => 3
+        ];        
+        $obj = DB::select("SELECT * FROM r_group WHERE usr_id = :usr_id ", $bind);
+        $arr_group = [];
+        $group_type_ids = [];
+        $group_ids = [];
         foreach ($obj as $d) {
-            $arr_holidays[] = date('Y-m-d', strtotime($d->time_start));
+           $group_ids[] = $d->group_id;
+           $group_type_ids[] = $d->group_type_id;
+           $arr['group_type_id'] = $d->group_type_id;
+           $arr_group[$d->group_type_id] = $arr;
         }
-        
-        foreach ($arr_35days as $k => $d) {
-            if (in_array($k,$arr_holidays)) {
-                $d['css_class'] = ' offwork';
-                $arr_35days[$k] = $d;
-            }
+        $obj = DB::table('m_group_type')->whereIn("group_type_id", $group_type_ids)->get();
+        foreach ($obj as $d) {
+           $arr['group_type_id'] = $d->group_type_id;
+           $arr['group_name'] = $d->group_name;
+           $arr['category_id'] = $d->category_id;
+           $arr_group[$d->group_type_id] = $arr;
         }
-        $today = date('Y-m-d');
-        return view('calendar.top', compact('arr_35days','month','today','tags'));
-        
+        $group_ids = json_encode($group_ids);
+        return view('calendar.edit', compact('date','arr_group','group_ids'));
     }
 }
 
