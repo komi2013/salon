@@ -23,9 +23,23 @@
 <table id="drawer">
   <tr><td id="ad_menu"><iframe src="/htm/ad_menu/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr>
 </table>
-    <style>
-
-    </style>
+<style>
+    input[name="group"]{
+        display:none;
+    }
+    input[name="group"] + label {
+        display:inline-block;
+        width: 30%;
+        padding: 10px 0px 10px 0px;
+    }
+    input[name="group"]:checked + label {
+        display:inline-block;
+        width: 30%;
+        padding: 10px 0px 10px 0px;
+        font-weight: bold;
+        background-color: gray;
+    }
+</style>
 <div id="content">
     <div style="width:100%;text-align: center;">
         <select name='tag' style="height:30px;width:80%;">
@@ -41,7 +55,7 @@
     <div style="width:100%;text-align: center;">
         <?=date('m/d',strtotime($date))?>
         <select name='hour_start' style="height:30px;">
-        <?php $hour = 0; while($hour < 25){?>
+        <?php $hour = 0; while($hour < 24){?>
             <option><?=str_pad($hour,2,0)?></option>
         <?php $hour++; }?>
         </select>
@@ -63,16 +77,16 @@
         </select>
     </div>
     <div style="width:100%;text-align: center;">
-    <textarea style="width:90%;height:120px;"></textarea>
+        <textarea style="width:90%;height:120px;" placeholder="内容"></textarea>
     </div>
 
     <div style="width:100%;text-align: center;">
     <div style="width:100%;display:inline-block;">
-        <input type="text" placeholder="ユーザー検索" id="searchUsr" style="height:40px;" oauth="facility">
-        <img src="/img/icon/magnifier.png" id="search" class="icon">
-        <select class="group" style="height:30px;width:80%;" oauth="facility">
+        <input type="text" placeholder="ユーザー検索" style="height:40px;">
+        <img src="/img/icon/magnifier.png" id="search" oauth="people" class="icon">
+        <select class="group" style="height:30px;width:80%;" oauth="people">
             <option>所属グループ</option>
-            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
+            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
             <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
             <?php $i++; }}?>
         </select><br>
@@ -96,6 +110,49 @@
     </div>
     </div>
     <br>
+    <div style="width:100%;text-align: center;">
+    <div style="width:100%;display:inline-block;">
+        <select class="group" style="height:30px;width:80%;" oauth="facility">
+            <option disabled>所属グループ</option>
+            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
+            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
+            <?php $i++; }}?>
+        </select><br>
+    </div>
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+        <div>候補施設</div>
+    <template v-for="(d,k) in group_facility">
+        <label v-bind:for="d[0]"><div style="margin:10px;">
+            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+            <div style="width:10%;display:inline-block;">
+                <input type="checkbox"　v-bind:value="d" v-model="join_facility" v-bind:id="d[0]">
+            </div></div></label>
+    </template>
+    </div>
+    <div style="width:100%;">↓</div>
+    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
+    <template v-for="(d,k) in reverseFacility">
+        <div>{{d[1]}}</div>
+    </template>
+        <div>利用施設</div>
+    </div>
+    </div>
+    <a target="_blank" v-bind:href="'/follower/?u='+group_radio">空き時間を確認</a>
+    <div style="width:100%;text-align: center;">
+        <input type="radio" name="group" value="0" id="public" v-model="group_radio">
+        <label for="public"> 公開</label>
+        <input type="radio" name="group" value="1" id="private" v-model="group_radio">
+        <label for="private"> 非公開</label>
+        <input type="radio" name="group" value="2" id="group" v-model="group_radio">
+        <label for="group"> 一部</label><br>
+        <select class="group" style="height:30px;width:80%;" oauth="people" v-if="group_radio == 2">
+            <option>所属グループ</option>
+            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
+            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
+            <?php $i++; }}?>
+        </select><br>
+    </div>
+    <br>
     <input type="button" value="test check" id="checkArr">
 </div>
 
@@ -110,33 +167,59 @@ var content = new Vue({
   el: '#content',
   data: {
       join_usrs:[]
-      ,group_usrs:[['11','test1'],['12','test2'],['13','test3'],['14','test4'],['15','test5'],['16','test6'],['17','test7']]
+      ,group_usrs:[]
       ,join_facility:[]
       ,group_facility:[]
+      ,group_radio:1
   },
   computed: {
     reverseUsrs() {
         return this.join_usrs.slice().reverse();
     },
+    reverseFacility() {
+        return this.join_facility.slice().reverse();
+    },
+    checkSchedule() {
+//        this
+//        JSON.stringify(para)
+        return this.join_facility.slice().reverse();
+    },
   }
 });
 
+
 $('.group').change(function(){
-    $.get('/Calendar/Get/groupUsr/'+$(this).val() +'/'+$(this).attr('oauth')+'/',{},function(){},"json")
-    .always(function(res){
-        content.group_usrs = res;
-    });
+    var this_val = $(this).val();
+    var oauth = $(this).attr('oauth');
+    groupChange(this_val,oauth);
 });
+function groupChange(this_val,oauth){
+    $.get('/Calendar/Get/groupUsr/'+this_val +'/'+oauth+'/',{},function(){},"json")
+    .always(function(res){
+        if(oauth == 'facility'){
+            content.group_facility = res;
+        }else{
+            content.group_usrs = res;
+        }
+    });
+}
 $('#search').click(function(){
     var param = {group_ids:JSON.parse(group_ids)};
-    $.get('/Calendar/Get/searchUsr/'+$('#searchUsr').val() +'/'+$(this).attr('oauth')+'/',param,function(){},"json")
+    $.get('/Calendar/Get/searchUsr/'+$('#searchUsr').val() +'/'+$('#search').attr('oauth')+'/',param,function(){},"json")
     .always(function(res){
         content.group_usrs = res;
     });
 });
 $('#checkArr').click(function(){
-    console.log(content.join_usrs);
-    console.log(content.join_usrs[0][0]);    
+    console.log(content.group_usrs);
+    console.log(content.group_facility);
+    console.log(content.checkSchedule);
+    for (var i = 0; i < content.group_facility.length; i++) {
+        content.group_usrs.push(content.group_facility[i]);
+    }
+    console.log($('option:selected'));
+    console.log($('.group').attr('oauth'));
+//    content.group_usrs[content.group_usrs.length] = [11,'komatesuuu'];
 });
 //$(function(){ ga('send', 'pageview'); });
 </script>

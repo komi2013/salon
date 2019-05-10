@@ -41,9 +41,7 @@ class GetController extends Controller {
         $usr_ids = [];
         foreach ($obj as $d) {
             if (!in_array($d->usr_id, $usr_ids)) {
-                
                 if ($i == 1) {
-//                    echo $i.'array in '.$d->usr_id;
                     $com_usr_id = $d->usr_id;
                 }else{
                     $com_usr_id .= ','.$d->usr_id;
@@ -51,14 +49,10 @@ class GetController extends Controller {
                 $usr_ids[] = $d->usr_id;
                 $i++;
             }
-//            echo $com_usr_id.'<br>';
         }
-//        echo $com_usr_id.'<br> dd';
-//        die($com_usr_id);
         $bind = [
             'word' => '%'.$word.'%'
         ];
-        $oauth_type_and = 'AND oauth_type <> 5';
         if(strlen($word) == mb_strlen($word,'utf8')) {
             $sql = "SELECT * FROM t_usr WHERE usr_name like :word AND usr_id in (".$com_usr_id.")";
         }else{
