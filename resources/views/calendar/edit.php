@@ -38,6 +38,10 @@
         font-weight: bold;
         background-color: gray;
     }
+    .candidate {
+        width: 100%;
+        text-align: center;
+    }
 </style>
 <div id="content">
     <div style="width:100%;text-align: center;">
@@ -90,23 +94,16 @@
             <?php $i++; }}?>
         </select><br>
     </div>
-    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
-        <div>候補者</div>
-    <template v-for="(d,k) in group_usrs">
-        <label v-bind:for="d[0]"><div style="margin:10px;">
-            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
-            <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d" v-model="join_usrs" v-bind:id="d[0]">
-            </div></div></label>
-    </template>
-    </div>
+    <select multiple style="width:80%;height:120px;" v-model="join_usrs">
+        <option class='candidate' disabled>候補者</option>
+        <option v-for="(d,k) in group_usrs" v-bind:value="d">{{d[1]}}</option>
+    </select>
     <div style="width:100%;">↓</div>
-    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
-    <template v-for="(d,k) in reverseUsrs">
-        <div>{{d[1]}}</div>
-    </template>
-        <div>参加者</div>
-    </div>
+    <select multiple style="width:80%;height:120px;">
+        <option v-for="(d,k) in reverseUsrs" v-bind:value="d">{{d[1]}}</option>
+        <option class='candidate' disabled>参加者</option>
+    </select>
+
     </div>
     <br>
     <div style="width:100%;text-align: center;">
@@ -118,23 +115,15 @@
             <?php $i++; }}?>
         </select><br>
     </div>
-    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
-        <div>候補施設</div>
-    <template v-for="(d,k) in group_facility">
-        <label v-bind:for="d[0]"><div style="margin:10px;">
-            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
-            <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d" v-model="join_facility" v-bind:id="d[0]">
-            </div></div></label>
-    </template>
-    </div>
+    <select multiple style="width:80%;height:120px;" v-model="join_facility">
+        <option class='candidate' disabled>候補施設</option>
+        <option v-for="(d,k) in group_facility" v-bind:value="d">{{d[1]}}</option>
+    </select>
     <div style="width:100%;">↓</div>
-    <div style="width:80%;height:120px;border:1px solid #000000;display:inline-block;overflow: scroll;">
-    <template v-for="(d,k) in reverseFacility">
-        <div>{{d[1]}}</div>
-    </template>
-        <div>利用施設</div>
-    </div>
+    <select multiple style="width:80%;height:120px;">
+        <option v-for="(d,k) in reverseFacility" v-bind:value="d">{{d[1]}}</option>
+        <option class='candidate' disabled>利用施設</option>
+    </select>
     </div>
     <a target="_blank" v-bind:href="'/Calendar/Space/hours12/<?=$date?>/'+checkSchedule+'/'">空き時間を確認</a>
     <div style="width:100%;text-align: center;">
@@ -176,6 +165,7 @@ var content = new Vue({
         return this.join_usrs.slice().reverse();
     },
     reverseFacility() {
+        console.log(this.join_facility);
         return this.join_facility.slice().reverse();
     },
     checkSchedule() {
@@ -200,13 +190,19 @@ $('.group').change(function(){
     groupChange(group_type_id,oauth);
 });
 function groupChange(group_type_id,oauth){
-    $.get('/Calendar/Get/groupUsr/'+group_type_id +'/'+oauth+'/',{},function(){},"json")
+    console.log(content.join_facility);
+    var join_facility = content.join_facility;
+    $.get('/Calendar/Get/groupUsr/'+group_type_id +'/'+oauth+'/',{},function(join_facility){
+//    content.join_facility = join_facility
+//    console.log(join_facility);        
+    },"json")
     .always(function(res){
         if(oauth == 'facility'){
             content.group_facility = res;
         }else{
             content.group_usrs = res;
         }
+
     });
 }
 $('#search').click(function(){
