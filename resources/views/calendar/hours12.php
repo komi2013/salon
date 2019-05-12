@@ -23,7 +23,7 @@
 <template v-for="n in u_num">
     <template v-for="d in 12">
         <div class='time' v-bind:style="'position:absolute;display:inline-block;width:30px;'+
-             'height:1500px;margin-left:'+((d*30)-30)+'px;border-left: solid 1px rgba(0,128,0,0.2);'+
+             'height:630px;margin-left:'+((d*30)-30)+'px;border-left: solid 1px rgba(0,128,0,0.2);'+
              'margin-top:'+(n-1)*630+'px;'">
             {{d+7}}</div>
     </template>

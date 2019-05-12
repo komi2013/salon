@@ -63,17 +63,14 @@ class SpaceController extends Controller {
         }
         
         
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $arr_usr = array_merge($arr_usr, $arr_usr);
-        $u_num = (int) floor(count($arr_usr)/20);
-//        dd($u_num);
-//        dd($s);
-//        $group_ids = json_encode($group_ids);
+//        $arr_usr = array_merge($arr_usr, $arr_usr);
+//        $arr_usr = array_merge($arr_usr, $arr_usr);
+//        $arr_usr = array_merge($arr_usr, $arr_usr);
+//        $arr_usr = array_merge($arr_usr, $arr_usr);
+//        $arr_usr = array_merge($arr_usr, $arr_usr);
+
+        $u_num = (int) floor(count($arr_usr)/20) + 1;
+
         return view('calendar.hours12', compact('s','arr_usr','u_num'));
     }
 }
