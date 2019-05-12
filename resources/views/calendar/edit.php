@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>My Calendar</title>
-    <meta name="description" content="美容室、理容店、サロン検索">
+    <title><?=date('Y/m/d',strtotime($date))?></title>
     <meta name="google-site-verification" content="" />
 
     <link rel="shortcut icon" href="" />
@@ -84,8 +83,8 @@
     <div style="width:100%;display:inline-block;">
         <input type="text" placeholder="ユーザー検索" style="height:40px;">
         <img src="/img/icon/magnifier.png" id="search" oauth="people" class="icon">
-        <select class="group" style="height:30px;width:80%;" oauth="people">
-            <option>所属グループ</option>
+        <select class="group" id="people_group" style="height:30px;width:80%;" oauth="people">
+            <option disabled>所属グループ</option>
             <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
             <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
             <?php $i++; }}?>
@@ -112,8 +111,8 @@
     <br>
     <div style="width:100%;text-align: center;">
     <div style="width:100%;display:inline-block;">
-        <select class="group" style="height:30px;width:80%;" oauth="facility">
-            <option disabled>所属グループ</option>
+        <select class="group" id="facility_group" style="height:30px;width:80%;" oauth="facility">
+            <option disabled>施設カテゴリ</option>
             <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
             <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
             <?php $i++; }}?>
@@ -137,7 +136,7 @@
         <div>利用施設</div>
     </div>
     </div>
-    <a target="_blank" v-bind:href="'/follower/?u='+group_radio">空き時間を確認</a>
+    <a target="_blank" v-bind:href="'/Calendar/Space/hours12/<?=$date?>/'+checkSchedule+'/'">空き時間を確認</a>
     <div style="width:100%;text-align: center;">
         <input type="radio" name="group" value="0" id="public" v-model="group_radio">
         <label for="public"> 公開</label>
@@ -180,21 +179,28 @@ var content = new Vue({
         return this.join_facility.slice().reverse();
     },
     checkSchedule() {
-//        this
-//        JSON.stringify(para)
-        return this.join_facility.slice().reverse();
+        var arr = [];
+        for (var i = 0; i < this.join_usrs.length; i++) {
+            arr.push(this.join_usrs[i]);
+        }
+        for (var i = 0; i < this.join_facility.length; i++) {
+            arr.push(this.join_facility[i]);
+        }
+//        console.log(arr);
+        return encodeURIComponent(JSON.stringify(arr));
     },
   }
 });
 
-
+groupChange($('#people_group option:selected').val(),'people');
+groupChange($('#facility_group option:selected').val(),'facility');
 $('.group').change(function(){
-    var this_val = $(this).val();
+    var group_type_id = $(this).val();
     var oauth = $(this).attr('oauth');
-    groupChange(this_val,oauth);
+    groupChange(group_type_id,oauth);
 });
-function groupChange(this_val,oauth){
-    $.get('/Calendar/Get/groupUsr/'+this_val +'/'+oauth+'/',{},function(){},"json")
+function groupChange(group_type_id,oauth){
+    $.get('/Calendar/Get/groupUsr/'+group_type_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
         if(oauth == 'facility'){
             content.group_facility = res;
@@ -211,15 +217,15 @@ $('#search').click(function(){
     });
 });
 $('#checkArr').click(function(){
-    console.log(content.group_usrs);
-    console.log(content.group_facility);
-    console.log(content.checkSchedule);
-    for (var i = 0; i < content.group_facility.length; i++) {
-        content.group_usrs.push(content.group_facility[i]);
+    var arr = [];
+    for (var i = 0; i < content.join_usrs.length; i++) {
+        arr.push(content.join_usrs[i]);
     }
-    console.log($('option:selected'));
-    console.log($('.group').attr('oauth'));
-//    content.group_usrs[content.group_usrs.length] = [11,'komatesuuu'];
+    for (var i = 0; i < content.join_facility.length; i++) {
+        arr.push(content.join_facility[i]);
+    }
+    console.log(encodeURIComponent(arr));
+    console.log(JSON.stringify(arr));
 });
 //$(function(){ ga('send', 'pageview'); });
 </script>
