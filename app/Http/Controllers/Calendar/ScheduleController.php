@@ -9,10 +9,11 @@ use Carbon\Carbon;
 class ScheduleController extends Controller {
 
     public function edit(Request $request, $directory=null, $controller=null, 
-            $action=null, $date=null, $id=null) {
+            $action=null, $date=null, $schedule_id=null) {
+        $usr_id = 3;
         $bind = [
-            'usr_id' => 3
-        ];        
+            'usr_id' => $usr_id
+        ];
         $obj = DB::select("SELECT * FROM r_group WHERE usr_id = :usr_id ", $bind);
         $arr_group = [];
         $group_type_ids = [];
@@ -31,7 +32,8 @@ class ScheduleController extends Controller {
            $arr_group[$d->group_type_id] = $arr;
         }
         $group_ids = json_encode($group_ids);
-        return view('calendar.edit', compact('date','arr_group','group_ids'));
+
+        return view('calendar.edit', compact('date','arr_group','group_ids','schedule_id'));
     }
 }
 
