@@ -28,6 +28,9 @@ class UpdateController extends Controller {
 //  string(1) "2"
 //  ["group_id"]=>
 //  string(1) "3"
+        // check usr_id and common_id view as well
+        // delete insert not update
+        // check updated_at somebody overwrite or not
         $usr_id = 3;
         if ($request->input('public') == 2) {
             $group_id = $request->input('group_id');
@@ -44,9 +47,7 @@ class UpdateController extends Controller {
         ];
         
         var_dump($request->input('usrs'));
-        $usr_ids = [$usr_id]; 
 
-//        var_dump($arr);
         if ($request->input('schedule_id')) {
             $usr_ids[] = $usr_id;
             foreach ($request->input('usrs') as $d) {
@@ -54,8 +55,9 @@ class UpdateController extends Controller {
             }
             DB::table('t_schedule')->update($arr)->whereIn("schedule_id", $usr_ids);
         } else {
+            $arr['usr_id'] = $usr_id;
+            $schedules[] = $arr;
             foreach ($request->input('usrs') as $d) {
-                $usr_ids[] = $d[0];
                 $arr['usr_id'] = $d[0];
                 $schedules[] = $arr;
             }
