@@ -58,7 +58,7 @@
             <option value="4" style="background-color:rgba(255,0,0,0.2);">タスク</option>
             <option value="5" style="background-color:rgba(128,0,128,0.2);">シフト</option>
         </select><br>
-        <input type="text" placeholder="タイトル" id="title" style="height:50px;width:80%;">
+        <input type="text" placeholder="タイトル" id="title" value="<?=$a['title']?>" style="height:50px;width:80%;">
     </div>
     <div style="width:100%;text-align: center;">
         <?=date('m/d',strtotime($date))?>
@@ -85,7 +85,7 @@
         </select>
     </div>
     <div style="width:100%;text-align: center;">
-        <textarea id="todo" style="width:90%;height:120px;" placeholder="内容"></textarea>
+        <textarea id="todo" style="width:90%;height:120px;" placeholder="内容"><?=$a['todo']?></textarea>
     </div>
     <div style="width:100%;text-align: center;">
         <input type="radio" name="group" value="0" id="public" v-model="group_radio">
@@ -179,7 +179,7 @@ var tag_color = ['','rgba(0,0,255,0.2)','rgba(0,128,0,0.2)','rgba(255,255,0,0.2)
 //1=meeting, 2=off, 3=out, 4=task, 5=shift
 var group_ids = '<?=$group_ids?>';
 var date = '<?=$date?>';
-var schedule_id = '<?=$schedule_id?>';
+var common_id = '<?=$common_id?>';
 var content = new Vue({
   el: '#content',
   data: {
@@ -256,7 +256,7 @@ $('#submit').click(function(){
         ,usrs : arr
         ,public : $('[name=group]:checked').val()
         ,group_id : $('#select_group').val()
-        ,schedule_id : schedule_id
+        ,common_id : common_id
     }
     $.post('/Calendar/Update/',param,function(){},"json")
     .always(function(res){
