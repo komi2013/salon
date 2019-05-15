@@ -95,9 +95,9 @@
         <div v-if="group_radio == 2">
         <select id="select_group" style="height:30px;width:80%;" oauth="people" >
             <option>所属グループ</option>
-            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
-            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
-            <?php $i++; }}?>
+            <?php foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
+            <option <?=$d['selected']?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
+            <?php }}?>
         </select>
         <br>
         </div>
@@ -176,17 +176,19 @@
 var tag_color = ['','rgba(0,0,255,0.2)','rgba(0,128,0,0.2)','rgba(255,255,0,0.2)','rgba(255,0,0,0.2)','rgba(128,0,128,0.2)'];
 //1=meeting, 2=off, 3=out, 4=task, 5=shift
 var group_ids = '<?=$group_ids?>';
+var group_radio = '<?=$group_radio?>';
 var date = '<?=$date?>';
 var common_id = '<?=$common_id?>';
 var json_usr = <?=$json_usr?>;
+var usrs = <?=$usrs?>;
 var content = new Vue({
   el: '#content',
   data: {
-      join_usrs:[json_usr]
+      join_usrs:[]
       ,group_usrs:[]
       ,join_facility:[]
       ,group_facility:[]
-      ,group_radio:1
+      ,group_radio:group_radio
   },
   computed: {
     reverseUsrs() {
@@ -275,6 +277,12 @@ function groupChange(group_type_id,oauth){
             content.group_facility = res;
         }else{
             content.group_usrs = res;
+            var i = 0;
+            for (var k in usrs) {
+                content.join_usrs[i] = res[usrs[k]];
+                i++;
+            }
+            console.log(content.join_usrs);
         }
     });
 }

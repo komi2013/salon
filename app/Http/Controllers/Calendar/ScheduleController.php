@@ -23,6 +23,30 @@ class ScheduleController extends Controller {
         for ($i=1; $i<6; $i++) {
             $tags[$i] = [$i,''];
         }
+        $bind = [
+            'usr_id' => $usr_id
+        ];
+        $obj = DB::select("SELECT * FROM r_group WHERE usr_id = :usr_id ", $bind);
+        $arr_group = [];
+        $group_type_ids = [];
+        $group_ids = [];
+        foreach ($obj as $d) {
+           $group_ids[] = $d->group_id;
+           $group_type_ids[] = $d->group_type_id;
+           $arr['group_type_id'] = $d->group_type_id;
+           $arr_group[$d->group_type_id] = $arr;
+        }
+        $obj = DB::table('m_group_type')->whereIn("group_type_id", $group_type_ids)->get();
+        foreach ($obj as $d) {
+           $arr['group_type_id'] = $d->group_type_id;
+           $arr['group_name'] = $d->group_name;
+           $arr['category_id'] = $d->category_id;
+           $arr['selected'] = '';
+           $arr_group[$d->group_type_id] = $arr;
+        }
+        $group_radio = 2;
+        $group_ids = json_encode($group_ids);
+        $usrs = [(int)$usr_id];
         $a['todo'] = '';
         $a['title'] = '';
         $a['usr_id'] = '';
@@ -73,49 +97,36 @@ class ScheduleController extends Controller {
                     $hour_start[date('H', strtotime($d->time_start))][1] = 'selected';
                     $hour_end[date('H', strtotime($d->time_end))][1] = 'selected';
                     $tags[$d->tag][1] = 'selected';
+                    
+                    if ($d->group_type_id < 2) {
+                        $group_radio = $d->group_type_id;
+                    } else if(isset($arr_group[$d->group_type_id]['selected'])) {
+                        $arr_group[$d->group_type_id]['selected'] = 'selected';
+                    }
                     $a['todo'] = $d->todo;
                     $a['title'] = $d->title;
-                    $a['usr_id'] = $d->usr_id;
-                    $a['group_id'] = $d->group_id;
                     $a['public_tag'] = $d->public_tag;
                     $a['public_title'] = $d->public_title;
                     $date = date('Y-m-d', strtotime($d->time_start));
                     $mydata = 2;
+                } else {
+                    $usrs[] = $d->usr_id;
                 }
             }
 
         }
         
-        $bind = [
-            'usr_id' => $usr_id
-        ];
-        $obj = DB::select("SELECT * FROM r_group WHERE usr_id = :usr_id ", $bind);
-        $arr_group = [];
-        $group_type_ids = [];
-        $group_ids = [];
-        foreach ($obj as $d) {
-           $group_ids[] = $d->group_id;
-           $group_type_ids[] = $d->group_type_id;
-           $arr['group_type_id'] = $d->group_type_id;
-           $arr_group[$d->group_type_id] = $arr;
-        }
-        $obj = DB::table('m_group_type')->whereIn("group_type_id", $group_type_ids)->get();
-        foreach ($obj as $d) {
-           $arr['group_type_id'] = $d->group_type_id;
-           $arr['group_name'] = $d->group_name;
-           $arr['category_id'] = $d->category_id;
-           $arr_group[$d->group_type_id] = $arr;
-        }
-        $group_ids = json_encode($group_ids);
         $request->session()->put('view_time', date('Y-m-d H:i:s'));
 //        echo '<pre>'; 
 //        echo date('H');
 //        var_dump($hour_start);
 //        echo '</pre>';
 //        die;
+        $usrs = json_encode($usrs);
         $json_usr = json_encode([$request->session()->get('usr_id'),$request->session()->get('usr_name_mb')]);
         return view('calendar.edit', compact('date','arr_group','group_ids','common_id',
-                'mydata','a','hour_start','hour_end','minute_start','minute_end','tags','json_usr'));
+                'mydata','a','hour_start','hour_end','minute_start','minute_end','tags',
+                'json_usr','group_radio','usrs'));
     }
 }
 
