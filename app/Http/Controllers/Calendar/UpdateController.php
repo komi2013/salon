@@ -10,7 +10,7 @@ class UpdateController extends Controller {
 
     public function lessuri(Request $request, $directory=null, $controller=null, $action=null) {
 
-        $usr_id = 3;
+        $usr_id = 10;
         $arr3 = [];
         if ($request->input('common_id')) {
             $common_id = $request->input('common_id');

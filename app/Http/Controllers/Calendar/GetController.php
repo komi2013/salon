@@ -27,8 +27,10 @@ class GetController extends Controller {
                     ->whereIn("usr_id", $usr_ids)->where("oauth_type","<>",5)->get();
         }
         foreach ($obj as $d) {
-           $arr = [$d->usr_id,$d->usr_name_mb];
-           $arr_usr[] = $arr;
+            if ($request->session()->get('usr_id') != $d->usr_id) {
+                $arr = [$d->usr_id,$d->usr_name_mb];
+                $arr_usr[] = $arr;
+            }
         }
         die(json_encode($arr_usr));
     }
@@ -66,8 +68,10 @@ class GetController extends Controller {
         $obj = DB::select($sql.$oauth_type_and, $bind);
         $arr_usr = [];
         foreach ($obj as $d) {
-           $arr = [$d->usr_id,$d->usr_name_mb];
-           $arr_usr[] = $arr;
+            if ($request->session()->get('usr_id') != $d->usr_id) {
+                $arr = [$d->usr_id,$d->usr_name_mb];
+                $arr_usr[] = $arr;
+            }
         }
         die(json_encode($arr_usr));
     }

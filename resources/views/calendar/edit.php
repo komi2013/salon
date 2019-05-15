@@ -52,36 +52,34 @@
     <div style="width:100%;text-align: center;">
         <select name='tag' style="height:30px;width:80%;">
             <option>タグ</option>
-            <option value="1" style="background-color:rgba(0,0,255,0.2);">会議</option>
-            <option value="2" style="background-color:rgba(0,128,0,0.2);">休み</option>
-            <option value="3" style="background-color:rgba(255,255,0,0.2);">外出</option>
-            <option value="4" style="background-color:rgba(255,0,0,0.2);">タスク</option>
-            <option value="5" style="background-color:rgba(128,0,128,0.2);">シフト</option>
+            <?php foreach($tags as $d){ ?>
+            <option value="<?=$d[0]?>" v-bind:style="'background-color:'+tag_color[<?=$d[0]?>]" <?=$d[1]?>><?=trans('tag.'.$d[0])?></option>
+            <?php } ?>
         </select><br>
         <input type="text" placeholder="タイトル" id="title" value="<?=$a['title']?>" style="height:50px;width:80%;">
     </div>
     <div style="width:100%;text-align: center;">
-        <?=date('m/d',strtotime($date))?>
+        <?=date('m/d',strtotime($date))?>&nbsp;
         <select name='hour_start' style="height:30px;">
-        <?php $hour = 0; while($hour < 24){?>
-            <option><?=str_pad($hour,2,0,STR_PAD_LEFT)?></option>
-        <?php $hour++; }?>
+        <?php foreach($hour_start as $d){?>
+            <option <?=$d[1]?>><?=$d[0]?></option>
+        <?php }?>
         </select>
         <select name='minute_start' style="height:30px;">
-        <?php $minute = 0; while($minute < 60){?>
-            <option><?=str_pad($minute,2,0)?></option>
-        <?php $minute = $minute + 15; }?>
+        <?php foreach($minute_start as $d){?>
+            <option <?=$d[1]?>><?=$d[0]?></option>
+        <?php }?>
         </select>
         <span>~</span>
         <select name='hour_end' style="height:30px;">
-        <?php $hour = 0; while($hour < 24){?>
-            <option><?=str_pad($hour,2,0,STR_PAD_LEFT)?></option>
-        <?php $hour++; }?>
+        <?php foreach($hour_end as $d){?>
+            <option <?=$d[1]?>><?=$d[0]?></option>
+        <?php }?>
         </select>
         <select name='minute_end' style="height:30px;">
-        <?php $minute = 0; while($minute < 60){?>
-            <option><?=str_pad($minute,2,0)?></option>
-        <?php $minute = $minute + 15; }?>
+        <?php foreach($minute_end as $d){?>
+            <option <?=$d[1]?>><?=$d[0]?></option>
+        <?php }?>
         </select>
     </div>
     <div style="width:100%;text-align: center;">
@@ -180,10 +178,11 @@ var tag_color = ['','rgba(0,0,255,0.2)','rgba(0,128,0,0.2)','rgba(255,255,0,0.2)
 var group_ids = '<?=$group_ids?>';
 var date = '<?=$date?>';
 var common_id = '<?=$common_id?>';
+var json_usr = <?=$json_usr?>;
 var content = new Vue({
   el: '#content',
   data: {
-      join_usrs:[]
+      join_usrs:[json_usr]
       ,group_usrs:[]
       ,join_facility:[]
       ,group_facility:[]
@@ -209,14 +208,6 @@ var content = new Vue({
   }
 });
 $('#submit').click(function(){
-    console.log($('[name=tag]').val());
-    console.log($('#title').val());
-    console.log(date +' '+ $('[name=hour_start]').val() + ':' + $('[name=minute_start]').val() + ':00');
-    console.log(date +' '+ $('[name=hour_end]').val() + ':' + $('[name=minute_end]').val() + ':00');
-    console.log($('#todo').val());
-    console.log(arr);
-    console.log($('[name=group]:checked').val());
-    console.log($('#select_group').val());
     var validate = 1;
     if($('[name=tag]').val()=='タグ'){
         $('[name=tag]').css({'border-color':'red'});
