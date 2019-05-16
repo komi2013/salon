@@ -45,9 +45,9 @@ class UpdateController extends Controller {
                 $arr3[$d->usr_id] = $arr2;
             }
             if (!$mydata) {
-                $res[0] = 2;
-                $res[1] = 'you can not update because you can not change others schedule';
-                die(json_encode($res));
+//                $res[0] = 2;
+//                $res[1] = 'you can not update because you can not change others schedule';
+//                die(json_encode($res));
             }
             DB::table('t_schedule')->where('common_id', $request->input('common_id'))->delete();
 
@@ -95,7 +95,7 @@ class UpdateController extends Controller {
                     $arr2['public_title'] = $public_title;                    
                 } else {
                     $arr2['group_id'] = 0; //0 = todo only, 1 = all, 2 ~ group_id
-                    $arr2['public_tag'] = '';
+                    $arr2['public_tag'] = 0;
                     $arr2['public_title'] = '';
                 }
                 $arr3[$d[0]] = $arr2;

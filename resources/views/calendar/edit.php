@@ -47,18 +47,22 @@
         overflow: scroll;
         text-align: left;
     }
+    .centerize {
+        width: 100%;
+        text-align: center;
+    }
 </style>
 <div id="content">
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
         <select name='tag' style="height:30px;width:80%;">
-            <option>タグ</option>
+            <option value="0">タグ</option>
             <?php foreach($tags as $d){ ?>
             <option value="<?=$d[0]?>" v-bind:style="'background-color:'+tag_color[<?=$d[0]?>]" <?=$d[1]?>><?=trans('tag.'.$d[0])?></option>
             <?php } ?>
         </select><br>
         <input type="text" placeholder="タイトル" id="title" value="<?=$a['title']?>" style="height:50px;width:80%;">
     </div>
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
         <?=date('m/d',strtotime($date))?>&nbsp;
         <select name='hour_start' style="height:30px;">
         <?php foreach($hour_start as $d){?>
@@ -82,39 +86,22 @@
         <?php }?>
         </select>
     </div>
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
         <textarea id="todo" style="width:90%;height:120px;" placeholder="内容"><?=$a['todo']?></textarea>
     </div>
-    <div style="width:100%;text-align: center;">
-        <input type="radio" name="group" value="0" id="public" v-model="group_radio">
-        <label for="public"> 公開</label>
-        <input type="radio" name="group" value="1" id="private" v-model="group_radio">
-        <label for="private"> 非公開</label>
-        <input type="radio" name="group" value="2" id="group" v-model="group_radio">
-        <label for="group"> 一部</label><br>
-        <div v-if="group_radio == 2">
-        <select id="select_group" style="height:30px;width:80%;" oauth="people" >
-            <option>所属グループ</option>
-            <?php foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
-            <option <?=$d['selected']?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
-            <?php }}?>
-        </select>
-        <br>
-        </div>
-    </div>
     <br>
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
     <input type="button" value="登録・更新"　style="height:30px;width:80%;" id="submit">
     </div>
     <br>
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
     <div style="width:100%;display:inline-block;">
         <input type="text" placeholder="ユーザー検索" style="height:40px;">
         <img src="/img/icon/magnifier.png" id="search" oauth="people" class="icon">
         <select class="group" id="people_group" style="height:30px;width:80%;" oauth="people">
             <option disabled>所属グループ</option>
             <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
-            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
+            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
             <?php $i++; }}?>
         </select><br>
     </div>
@@ -128,7 +115,7 @@
             </div></div></label>
     </template>
     </div>
-    <div style="width:100%;">↓</div>
+    <div class="centerize">↓</div>
     <div class="joining">
     <template v-for="(d,k) in reverseUsrs">
         <div>{{d[1]}}</div>
@@ -137,12 +124,12 @@
     </div>
     </div>
     <br>
-    <div style="width:100%;text-align: center;">
+    <div class="centerize">
     <div style="width:100%;display:inline-block;">
         <select class="group" id="facility_group" style="height:30px;width:80%;" oauth="facility">
             <option disabled>施設カテゴリ</option>
             <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
-            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_type_id']?>"><?=$d['group_name']?></option>
+            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
             <?php $i++; }}?>
         </select><br>
     </div>
@@ -156,7 +143,7 @@
             </div></label>
     </template>
     </div>
-    <div style="width:100%;">↓</div>
+    <div class="centerize">↓</div>
     <div class="joining">
     <template v-for="(d,k) in reverseFacility">
         <div>{{d[1]}}</div>
@@ -165,10 +152,36 @@
     </div>
     </div>
     <a target="_blank" v-bind:href="'/Calendar/Space/hours12/<?=$date?>/'+checkSchedule+'/'">空き時間を確認</a>
-
-    <br><br>
+    <br>
+    <div class="centerize">
+        <input type="radio" name="group" value="0" id="public" v-model="group_radio">
+        <label for="public"> 公開</label>
+        <input type="radio" name="group" value="1" id="private" v-model="group_radio">
+        <label for="private"> 非公開</label>
+        <input type="radio" name="group" value="2" id="group" v-model="group_radio">
+        <label for="group"> 一部</label><br>
+        <div v-if="group_radio == 2">
+        <select id="select_group" style="height:30px;width:80%;" oauth="people" >
+            <option>所属グループ</option>
+            <?php foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
+            <option <?=$d['selected']?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
+            <?php }}?>
+        </select>
+        <br>
+        </div>
+    </div>
+    <br>
+    <div class="centerize">
+        <select name="public_tag" style="height:30px;width:80%;">
+            <option value="0">公開タグ</option>
+            <?php foreach($public_tags as $d){ ?>
+            <option value="<?=$d[0]?>" v-bind:style="'background-color:'+tag_color[<?=$d[0]?>]" <?=$d[1]?>><?=trans('tag.'.$d[0])?></option>
+            <?php } ?>
+        </select><br>
+        <input type="text" placeholder="公開タイトル" id="public_title" value="<?=$a['public_title']?>" style="height:50px;width:80%;">
+    </div>
 </div>
-
+<br>
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
 <script>
@@ -179,7 +192,7 @@ var group_ids = '<?=$group_ids?>';
 var group_radio = '<?=$group_radio?>';
 var date = '<?=$date?>';
 var common_id = '<?=$common_id?>';
-var json_usr = <?=$json_usr?>;
+var usr_id = <?=$usr_id?>;
 var usrs = <?=$usrs?>;
 var content = new Vue({
   el: '#content',
@@ -211,7 +224,7 @@ var content = new Vue({
 });
 $('#submit').click(function(){
     var validate = 1;
-    if($('[name=tag]').val()=='タグ'){
+    if($('[name=tag]').val()==0){
         $('[name=tag]').css({'border-color':'red'});
         validate=2;
     }else{
@@ -250,6 +263,8 @@ $('#submit').click(function(){
         ,public : $('[name=group]:checked').val()
         ,group_id : $('#select_group').val()
         ,common_id : common_id
+        ,public_tag : $('[name=public_tag]').val()
+        ,public_title : $('#public_title').val()
     }
     $.post('/Calendar/Update/',param,function(){},"json")
     .always(function(res){
@@ -266,23 +281,43 @@ $('#search').click(function(){
 groupChange($('#people_group option:selected').val(),'people');
 groupChange($('#facility_group option:selected').val(),'facility');
 $('.group').change(function(){
-    var group_type_id = $(this).val();
+    var group_id = $(this).val();
     var oauth = $(this).attr('oauth');
-    groupChange(group_type_id,oauth);
+    groupChange(group_id,oauth);
 });
-function groupChange(group_type_id,oauth){
-    $.get('/Calendar/Get/groupUsr/'+group_type_id +'/'+oauth+'/',{},function(){},"json")
+function groupChange(group_id,oauth){
+    $.get('/Calendar/Get/groupUsr/'+group_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
         if(oauth == 'facility'){
-            content.group_facility = res;
-        }else{
-            content.group_usrs = res;
+            var join = [];
             var i = 0;
             for (var k in usrs) {
-                content.join_usrs[i] = res[usrs[k]];
-                i++;
+                if(res[usrs[k]]){
+                    join[i] = res[usrs[k]];
+                    i++;
+                }
             }
-            console.log(content.join_usrs);
+            content.group_facility = res;
+            content.join_facility = join;
+        }else{
+            var join = [];
+            var i = 0;
+            for (var k in usrs) {
+                if(res[usrs[k]]){
+                    join[i] = res[usrs[k]];
+                    i++;
+                }
+            }
+            var group = [];
+            i = 0;
+            for (var k in res) {
+                if (res[k][0] != usr_id) {
+                    group[i] = res[k];
+                    i++;                    
+                }
+            }
+            content.group_usrs = group;
+            content.join_usrs = join;
         }
     });
 }

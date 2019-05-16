@@ -9,11 +9,11 @@ use Carbon\Carbon;
 class GetController extends Controller {
 
     public function groupUsr(Request $request, $directory=null, $controller=null, 
-            $action=null, $group_type_id=null, $oauth_type=null) {
+            $action=null, $group_id=null, $oauth_type=null) {
         $bind = [
-            'group_type_id' => $group_type_id
+            'group_id' => $group_id
         ];        
-        $obj = DB::select("SELECT * FROM r_group WHERE group_type_id = :group_type_id ", $bind);
+        $obj = DB::select("SELECT * FROM r_group_relate WHERE group_id = :group_id ", $bind);
         $arr_usr = [];
         $usr_ids = [];
         foreach ($obj as $d) {
@@ -27,16 +27,14 @@ class GetController extends Controller {
                     ->whereIn("usr_id", $usr_ids)->where("oauth_type","<>",5)->get();
         }
         foreach ($obj as $d) {
-            if ($request->session()->get('usr_id') != $d->usr_id) {
-                $arr = [$d->usr_id,$d->usr_name_mb];
-                $arr_usr[] = $arr;
-            }
+            $arr = [$d->usr_id,$d->usr_name_mb];
+            $arr_usr[$d->usr_id] = $arr;
         }
         die(json_encode($arr_usr));
     }
     public function searchUsr(Request $request, $directory=null, $controller=null, 
             $action=null, $word=null, $oauth_type=null) {
-        $obj = DB::table('r_group')->select('usr_id')
+        $obj = DB::table('r_group_relate')->select('usr_id')
             ->whereIn("group_id", $_GET['group_ids'])->get();
         $i = 1;
         $com_usr_id = '';
@@ -68,10 +66,8 @@ class GetController extends Controller {
         $obj = DB::select($sql.$oauth_type_and, $bind);
         $arr_usr = [];
         foreach ($obj as $d) {
-            if ($request->session()->get('usr_id') != $d->usr_id) {
-                $arr = [$d->usr_id,$d->usr_name_mb];
-                $arr_usr[] = $arr;
-            }
+            $arr = [$d->usr_id,$d->usr_name_mb];
+            $arr_usr[$d->usr_id] = $arr;
         }
         die(json_encode($arr_usr));
     }
