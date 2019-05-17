@@ -28,6 +28,14 @@
         width: 100%;
         text-align: center;
     }
+    .joining {
+        width: 80%;
+        height: 120px;
+        border: 1px solid #000000;
+        display: inline-block;
+        overflow: scroll;
+        text-align: left;
+    }
 </style>
 <div id="content">
     <div class="centerize">
@@ -40,13 +48,19 @@
     <a v-bind:href="'/test/auth/'+password+'/'" target="_blank" id="password">{{password}}</a>
     &nbsp;&nbsp;<img src="/img/icon/pencil.png" class="icon" id="shuffle">
     </div>
-    <table>
+    <table style="margin-left:20px;">
     <tr v-for="(d,k) in group_usr">
         <td>{{d['usr_name']}}</td>
-        <td><input type="checkbox" v-bind:checked="d['owner_flg']"></td>
-        <td><img src="/img/icon/trash.png" class="icon"></td>
+        <td><input type="checkbox" v-bind:checked="d['owner_flg']" v-model="d['owner_flg']"></td>
+        <td v-on:click="del(k)"><img src="/img/icon/trash.png" class="icon"></td>
     </tr>
     </table>
+    <br>
+    <div class="joining"></div>
+    
+    <div class="centerize">
+    <input type="button" value="登録・更新"　style="height:30px;width:80%;" id="submit">
+    </div>
 </div>
 <br>
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
@@ -58,9 +72,13 @@ var content = new Vue({
   data: {
       password:'<?=$m_group->password?>'
       ,group_usr : <?=$group_usr?>
+      ,join_usrs:[]
+      ,group_usrs:[]
   },
-  computed: {
-    reverseUsrs() {},
+  methods : {
+    del : function(index){
+      this.group_usr.splice(index, 1);
+    }
   }
 });
 function randomString(length) {
@@ -74,8 +92,10 @@ content.password = content.password ? content.password : randomString(16);
 $('#shuffle').click(function(){
     content.password = randomString(16);
 });
-console.log(content.group_usr);
 
+$('#submit').click(function(){
+    console.log(content.group_usr);
+});
 //$(function(){ ga('send', 'pageview'); });
 </script>
 </body>

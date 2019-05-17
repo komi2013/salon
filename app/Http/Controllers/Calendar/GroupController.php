@@ -44,7 +44,11 @@ class GroupController extends Controller {
             $people = 'selected';
             $facility = '';
         }
-        $group_usr = json_encode($group_usr);
+        $arr = [];
+        foreach ($group_usr as $d) {
+          $arr[] = $d;  
+        }
+        $group_usr = json_encode($arr);
         return view('calendar.group', compact('group_usr','m_group','people','facility'));
     }
 }
