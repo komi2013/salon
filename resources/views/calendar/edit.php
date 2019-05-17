@@ -180,6 +180,15 @@
         </select><br>
         <input type="text" placeholder="公開タイトル" id="public_title" value="<?=$a['public_title']?>" style="height:50px;width:80%;">
     </div>
+    <br>
+    <div class="centerize">
+        <?php foreach($arr_group as $d){ if($d['owner_flg'] == 1){ ?>
+        <div style="width:90%;text-align:left;display:inline-block;">
+        <a href="/Calendar/Group/edit/<?=$d['group_id']?>/" target="_blank"><?=$d['group_name']?>
+            <img src="/img/icon/pencil.png" style="height:20px;width:20px;"></a>
+        </div>
+        <?php }}?>
+    </div>
 </div>
 <br>
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
@@ -192,7 +201,7 @@ var group_ids = '<?=$group_ids?>';
 var group_radio = '<?=$group_radio?>';
 var date = '<?=$date?>';
 var common_id = '<?=$common_id?>';
-var usr_id = <?=$usr_id?>;
+var usr_id = '<?=$usr_id?>';
 var usrs = <?=$usrs?>;
 var content = new Vue({
   el: '#content',

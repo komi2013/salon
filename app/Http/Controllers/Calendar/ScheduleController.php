@@ -29,11 +29,10 @@ class ScheduleController extends Controller {
         $obj = DB::select("SELECT * FROM r_group_relate WHERE usr_id = :usr_id ", $bind);
         $arr_group = [];
         $group_ids = [];
-        $group_ids = [];
         foreach ($obj as $d) {
            $group_ids[] = $d->group_id;
-           $group_ids[] = $d->group_id;
            $arr['group_id'] = $d->group_id;
+           $arr['owner_flg'] = $d->owner_flg;
            $arr_group[$d->group_id] = $arr;
         }
         $obj = DB::table('m_group')->whereIn("group_id", $group_ids)->get();
@@ -125,7 +124,7 @@ class ScheduleController extends Controller {
 //        die;
 //        dd($public_tags,$tags);
         $usrs = json_encode($usrs);
-//        $json_usr = json_encode([$request->session()->get('usr_id'),$request->session()->get('usr_name_mb')]);
+
         return view('calendar.edit', compact('date','arr_group','group_ids','common_id',
                 'mydata','a','hour_start','hour_end','minute_start','minute_end','tags',
                 'usr_id','group_radio','usrs','public_tags'));
