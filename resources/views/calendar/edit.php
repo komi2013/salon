@@ -300,34 +300,53 @@ function groupChange(group_id,oauth){
         if(oauth == 'facility'){
             var join = [];
             var i = 0;
+            var duplicate = false;
             for (var k in usrs) {
-                if(res[usrs[k]]){
-                    join[i] = res[usrs[k]];
+                if(res[k]){
+                    for (var i3=0; content.join_facility.length > i3; i3++) {
+                        if(content.join_facility[i3]['usr_id'] == res[k]['usr_id']){
+                            duplicate = true;
+                        }
+                    }
+                    if(!duplicate){
+                       join[i] = res[k];
+                    }
                     i++;
                 }
+            }
+            for (var i3=0; content.join_facility.length > i3; i3++) {
+                join.push(content.join_facility[i3]);
             }
             content.group_facility = res;
             content.join_facility = join;
         }else{
             var join = [];
             var i = 0;
+            var duplicate = false;
+            console.log(res);
+            console.log(usrs);
             for (var k in usrs) {
+                console.log(k);
                 if(res[usrs[k]]){
-                    join[i] = res[usrs[k]];
+                    
+                    for (var i3=0; content.join_usrs.length > i3; i3++) {
+                        if(content.join_usrs[i3]['usr_id'] == res[usrs[k]]['usr_id']){
+                            duplicate = true;
+                        }
+                    }
+                    if(!duplicate){
+                       join[i] = res[usrs[k]];
+                    }
                     i++;
                 }
             }
-            var group = [];
-            i = 0;
-            for (var k in res) {
-                if (res[k][0] != usr_id) {
-                    group[i] = res[k];
-                    i++;                    
-                }
+            for (var i3=0; content.join_usrs.length > i3; i3++) {
+                join.push(content.join_usrs[i3]);
             }
-            content.group_usrs = group;
+            content.group_usrs = res;
             content.join_usrs = join;
         }
+        
     });
 }
 //$(function(){ ga('send', 'pageview'); });

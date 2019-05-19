@@ -37,11 +37,9 @@ class ScheduleController extends Controller {
         }
         $obj = DB::table('m_group')->whereIn("group_id", $group_ids)->get();
         foreach ($obj as $d) {
-           $arr['group_id'] = $d->group_id;
-           $arr['group_name'] = $d->group_name;
-           $arr['category_id'] = $d->category_id;
-           $arr['selected'] = '';
-           $arr_group[$d->group_id] = $arr;
+           $arr_group[$d->group_id]['group_name'] = $d->group_name;
+           $arr_group[$d->group_id]['category_id'] = $d->category_id;
+           $arr_group[$d->group_id]['selected'] = '';
         }
         $group_radio = 2;
         $group_ids = json_encode($group_ids);
@@ -117,12 +115,6 @@ class ScheduleController extends Controller {
         }
         
         $request->session()->put('view_time', date('Y-m-d H:i:s'));
-//        echo '<pre>'; 
-//        echo date('H');
-//        var_dump($hour_start);
-//        echo '</pre>';
-//        die;
-//        dd($public_tags,$tags);
         $usrs = json_encode($usrs);
 
         return view('calendar.edit', compact('date','arr_group','group_ids','common_id',
