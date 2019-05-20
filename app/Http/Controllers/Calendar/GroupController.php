@@ -48,7 +48,6 @@ class GroupController extends Controller {
             $people = 'selected';
             $facility = '';
         }
-        $usrs = json_encode($usrs);
         $arr_group = [];
         $group_ids = [];
         foreach ($res as $d) {
@@ -66,8 +65,22 @@ class GroupController extends Controller {
            $arr_group[$d->group_id]['category_id'] = $d->category_id;
            $arr_group[$d->group_id]['selected'] = '';
         }
+
+        $i = $i2 = 0;
+        foreach ($usrs as $d) {
+//            if ($d['oauth_type']) {}
+            $join_facility[$i][0] = $d['usr_id'];
+            $join_facility[$i][1] = $d['usr_name_mb'];
+            $join_facility[$i][2] = $d['owner_flg'];
+            $join_facility[$i][4] = $d['oauth_type'];
+//            $join_facility[$i][4] = $d['oauth_type'];
+            $i++;
+        }
+//        dd($usrs,$join_facility);
+        $usrs = json_encode($usrs);
+        $join_facility = json_encode($join_facility);
         return view('calendar.group_edit', compact('usrs','m_group','people','facility',
-                'arr_group','usr_id'));
+                'arr_group','usr_id','join_facility'));
     }
 }
 

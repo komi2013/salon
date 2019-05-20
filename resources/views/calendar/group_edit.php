@@ -68,7 +68,7 @@
         <label v-bind:for="d[0]"><div style="margin:5px;">
             <div style="width:80%;display:inline-block;">{{d[1]}}</div>
             <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d" v-model="join_usrs" v-bind:id="d[0]">
+                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_usrs" v-bind:id="d[0]">
             </div></div></label>
     </template>
     </div>
@@ -99,14 +99,14 @@
         <label v-bind:for="d[0]" style='margin:5px;'>
             <div style="width:80%;display:inline-block;">{{d[1]}}</div>
             <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d" v-model="join_facility" v-bind:id="d[0]">
+                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_facility" v-bind:id="d[0]">
             </div></label>
     </template>
     </div>
     <div class="centerize">↓</div>
     <div class="joining">
-    <template v-for="(d,k) in reverseFacility">
-        <div>{{d[1]}}</div>
+    <template v-for="(d) in reverseFacility">
+        <div>{{d[1]}}  --- {{d[2]}}</div>
     </template>
         <div>利用施設</div>
     </div>
@@ -127,25 +127,60 @@ var content = new Vue({
   data: {
       password:'<?=$m_group->password?>'
       ,usrs : usrs
-      ,join_usrs:[]
       ,group_usrs:[]
-      ,join_facility:[]
+      ,arr_usrs: []
+      ,join_usrs:[]
       ,group_facility:[]
+      ,arr_facility:[]
+      ,join_facility:[]
   },
   computed: {
     reverseUsrs() {
+        var join = [];
+        var i = 0;
+        for (var k in this.arr_usrs) {
+            if(this.group_usrs[this.arr_usrs[k]]){
+                join[i] = this.group_usrs[this.arr_usrs[k]];
+                i++;
+            } else {  //nor group_usrs but join_usrs has. it should show
+                for (var i2=0; this.join_usrs.length > i2; i2++) {
+                    if(this.join_usrs[i2][0] == this.arr_usrs[k]){
+                        join[i] = this.join_usrs[i2];
+                        i++;
+                    }
+                }
+            }
+        }
+        this.join_usrs = join;
         return this.join_usrs.slice().reverse();
     },
     reverseFacility() {
+        var join = [];
+        var i = 0;
+        for (var k in this.arr_facility) {
+            if(this.group_facility[this.arr_facility[k]]){
+                join[i] = this.group_facility[this.arr_facility[k]];
+                i++;
+            } else {  //nor group_facility but join_facility has. it should show
+                for (var i2=0; this.join_facility.length > i2; i2++) {
+                    if(this.join_facility[i2][0] == this.arr_facility[k]){
+                        join[i] = this.join_facility[i2];
+                        i++;
+                    }
+                }
+            }
+        }
+        this.join_facility = join;
         return this.join_facility.slice().reverse();
     },
   },
   methods : {
-    del : function(index){
-      this.usrs.splice(index, 1);
-    }
+//    del : function(index){
+//      this.usrs.splice(index, 1);
+//    }
   },
 });
+
 function randomString(length) {
     var result = '';
     var length = 16
@@ -159,7 +194,7 @@ $('#shuffle').click(function(){
 });
 
 $('#submit').click(function(){
-    console.log(content.join_usrs);
+    console.log(content.join_facility);
 });
 
 $('#search').click(function(){
@@ -180,51 +215,10 @@ function groupChange(group_id,oauth){
     $.get('/Calendar/Get/groupUsr/'+group_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
         if(oauth == 'facility_owner'){
-            var join = [];
-            var i = 0;
-            var duplicate = false;
-            for (var k in usrs) {
-                if(res[k]){
-                    for (var i3=0; content.join_facility.length > i3; i3++) {
-                        if(content.join_facility[i3]['usr_id'] == res[k]['usr_id']){
-                            duplicate = true;
-                        }
-                    }
-                    if(!duplicate){
-                       join[i] = res[k];
-                    }
-                    i++;
-                }
-            }
-            for (var i3=0; content.join_facility.length > i3; i3++) {
-                join.push(content.join_facility[i3]);
-            }
             content.group_facility = res;
-            content.join_facility = join;
         }else{
-            var join = [];
-            var i = 0;
-            var duplicate = false;
-            for (var k in usrs) {
-                if(res[k]){
-                    for (var i3=0; content.join_usrs.length > i3; i3++) {
-                        if(content.join_usrs[i3]['usr_id'] == res[k]['usr_id']){
-                            duplicate = true;
-                        }
-                    }
-                    if(!duplicate){
-                       join[i] = res[k];
-                    }
-                    i++;
-                }
-            }
-            for (var i3=0; content.join_usrs.length > i3; i3++) {
-                join.push(content.join_usrs[i3]);
-            }
             content.group_usrs = res;
-            content.join_usrs = join;
         }
-        
     });
 }
 
