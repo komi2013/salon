@@ -26,19 +26,13 @@ class GroupController extends Controller {
                     $owner = true;
                 }
                 $usr_ids[] = $d->usr_id;
-                $arr['usr_id'] = $d->usr_id;
-                $arr['owner_flg'] = $d->owner_flg ? true : false;
-                $usrs[$d->usr_id] = $arr;
+//                $arr['usr_id'] = $d->usr_id;
+//                $arr['owner_flg'] = $d->owner_flg ? true : false;
+//                $usrs[$d->usr_id] = $arr;
             }
         }
         if (!$owner) {
             die('you can not change this group');
-        }
-        $obj = DB::table('t_usr')->whereIn("usr_id", $usr_ids)->get();
-        foreach ($obj as $d) {
-           $usrs[$d->usr_id]['usr_name'] = $d->usr_name;
-           $usrs[$d->usr_id]['usr_name_mb'] = $d->usr_name_mb;
-           $usrs[$d->usr_id]['oauth_type'] = $d->oauth_type;
         }
         $m_group = DB::table('m_group')->where("group_id", $group_id)->first();
         if ($m_group->category_id == 1) {
@@ -66,21 +60,9 @@ class GroupController extends Controller {
            $arr_group[$d->group_id]['selected'] = '';
         }
 
-        $i = $i2 = 0;
-        foreach ($usrs as $d) {
-//            if ($d['oauth_type']) {}
-            $join_facility[$i][0] = $d['usr_id'];
-            $join_facility[$i][1] = $d['usr_name_mb'];
-            $join_facility[$i][2] = $d['owner_flg'];
-            $join_facility[$i][4] = $d['oauth_type'];
-//            $join_facility[$i][4] = $d['oauth_type'];
-            $i++;
-        }
-//        dd($usrs,$join_facility);
-        $usrs = json_encode($usrs);
-        $join_facility = json_encode($join_facility);
-        return view('calendar.group_edit', compact('usrs','m_group','people','facility',
-                'arr_group','usr_id','join_facility'));
+        $usr_ids = json_encode($usr_ids);
+        return view('calendar.group_edit', compact('m_group','people','facility',
+                'arr_group','usr_id','usr_ids'));
     }
 }
 

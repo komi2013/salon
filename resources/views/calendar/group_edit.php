@@ -36,6 +36,9 @@
         overflow: scroll;
         text-align: left;
     }
+    .owner {
+        background-color: yellowgreen;
+    }
 </style>
 <div id="content">
     <div class="centerize">
@@ -65,21 +68,23 @@
     <div class="joining">
         <div>候補者</div>
     <template v-for="(d,k) in group_usrs">
-        <label v-bind:for="d[0]"><div style="margin:5px;">
-            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
-            <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_usrs" v-bind:id="d[0]">
-            </div></div></label>
+        <label v-bind:for="'g_u_'+d[0]"><div style="margin:5px;">
+        <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+        <div style="width:15%;display:inline-block;text-align:right;">
+            <input type="checkbox"　v-bind:value="d[0]" v-model="arr_usrs" v-bind:id="'g_u_'+d[0]">
+        </div></div></label>
     </template>
     </div>
     <div class="centerize">↓</div>
     <div class="joining">
-        <div>参加者</div>
+        <div style="width:80%;display:inline-block;">参加者</div>
+        <div style="width:15%;display:inline-block;text-align:right;">管理者</div>
     <template v-for="(d,k) in reverseUsrs">
-        <div style="display:inline-block;">{{d[1]}}</div>
-        <div style="display:inline-block;">
-            <input type="checkbox" v-bind:checked="d[2]" v-model="d[2]"></div>
-        <br>
+        <label v-bind:for="'j_u_'+d[0]"><div style="margin:5px;">
+        <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+        <div style="width:15%;display:inline-block;text-align:right;">
+            <input type="checkbox" v-bind:value="d[2]" v-model="d[2]" v-bind:id="'j_u_'+d[0]" v-bind:disabled="d[4]" >
+         </div></div></label>
     </template>
     </div>
     </div>
@@ -96,19 +101,22 @@
     <div class="joining">
     <div>候補施設　全て</div>
     <template v-for="(d,k) in group_facility">
-        <label v-bind:for="d[0]" style='margin:5px;'>
+        <label v-bind:for="'g_f_'+d[0]"><div style="margin:5px;">
             <div style="width:80%;display:inline-block;">{{d[1]}}</div>
-            <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_facility" v-bind:id="d[0]">
-            </div></label>
+            <div style="width:15%;display:inline-block;text-align:right;">
+                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_facility" v-bind:id="'g_f_'+d[0]">
+            </div></div></label>
     </template>
     </div>
     <div class="centerize">↓</div>
     <div class="joining">
+    <div>利用施設</div>
     <template v-for="(d) in reverseFacility">
-        <div>{{d[1]}}  --- {{d[2]}}</div>
+        <div style="margin:5px;" v-bind:class="{ owner: d[4] != 5 }">
+        <div style="width:80%;display:inline-block;">{{d[1]}}</div>
+        <div style="width:15%;display:inline-block;text-align:right;"></div>
+        </div>
     </template>
-        <div>利用施設</div>
     </div>
     </div>
     <br>
@@ -120,19 +128,18 @@
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
 <script>
-var usr_id = <?=$usr_id?>;
-var usrs = <?=$usrs?>;
 var content = new Vue({
   el: '#content',
   data: {
       password:'<?=$m_group->password?>'
-      ,usrs : usrs
+      ,usr_id : <?=$usr_id?>
       ,group_usrs:[]
-      ,arr_usrs: []
+      ,arr_usrs: <?=$usr_ids?>
       ,join_usrs:[]
       ,group_facility:[]
-      ,arr_facility:[]
+      ,arr_facility:<?=$usr_ids?>
       ,join_facility:[]
+      ,j_u:[]
   },
   computed: {
     reverseUsrs() {
@@ -151,6 +158,7 @@ var content = new Vue({
                 }
             }
         }
+
         this.join_usrs = join;
         return this.join_usrs.slice().reverse();
     },
@@ -174,9 +182,61 @@ var content = new Vue({
         return this.join_facility.slice().reverse();
     },
   },
+    watch: { // after, before same value somehow
+        join_usrs: { handler: function (after, before) {
+            var arr_is = [];
+            var is = false;
+            var i2 = 0;
+            for (var i=0; after.length > i; i++) {
+                if(after[i][2]){
+                    arr_is[i2] = true;
+                    i2++;
+                }
+                is = true;
+                after[i][4] = null;
+            }
+            if(arr_is.length < 2 && is){
+                for (var i=0; after.length > i; i++) {
+                    if(after[i][2]){
+                        after[i][4] = 'disabled';
+                    }
+                }
+            }
+            this.join_usrs = after;
+        },deep : true},
+        arr_facility: { handler: function (after, before) {
+            console.log(this.join_facility);
+            var arr_is = [];
+//            var i = 0;
+            var join = [];
+            for (var k in after) {
+                for (var i2=0; this.join_facility.length > i2; i2++) {
+                    
+                    
+                    if(this.join_facility[i2][0] == after[k]){
+                        console.log(this.join_facility[i2][0]+'='+after[k]);
+//                        if(this.group_facility[after[k]][4] != 5){
+//                            arr_is[i] = true;
+//                            i++;
+//                        }
+//                        join[k] = this.group_facility[after[k]];
+                    }
+                }
+            }
+//            if(arr_is.length < 2){
+//                console.log('hi');
+//                for (var k in join) {
+//                    if(join[k][4] != 5){
+//                        join[k][5] = 'disabled';
+//                    }
+//                }
+//            }
+//            console.log(join);
+//            this.join_usrs = after;
+        },deep : true},
+    },
   methods : {
-//    del : function(index){
-//      this.usrs.splice(index, 1);
+//    checkIs : function(){
 //    }
   },
 });
@@ -194,7 +254,9 @@ $('#shuffle').click(function(){
 });
 
 $('#submit').click(function(){
-    console.log(content.join_facility);
+    console.log($('.j_u').val());
+    console.log($('.j_u').attr("checked"));
+    console.log($('.j_u').val());
 });
 
 $('#search').click(function(){
