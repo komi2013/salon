@@ -204,34 +204,36 @@ var content = new Vue({
             }
             this.join_usrs = after;
         },deep : true},
-        arr_facility: { handler: function (after, before) {
-            console.log(this.join_facility);
+        join_facility: { handler: function (after, before) {
             var arr_is = [];
-//            var i = 0;
+            var i = 0;
             var join = [];
-            for (var k in after) {
+            var is = false;
+            for (var k in this.arr_facility) {
                 for (var i2=0; this.join_facility.length > i2; i2++) {
                     
                     
-                    if(this.join_facility[i2][0] == after[k]){
-                        console.log(this.join_facility[i2][0]+'='+after[k]);
-//                        if(this.group_facility[after[k]][4] != 5){
-//                            arr_is[i] = true;
-//                            i++;
-//                        }
-//                        join[k] = this.group_facility[after[k]];
+                    if(this.join_facility[i2][0] == this.arr_facility[k]){
+                        if(this.join_facility[i2][4] != 5){
+                            arr_is[i] = true;
+                            i++;
+                        }
+                        join[k] = this.join_facility[i2];
+                        join[k][5] = null;
+                    }
+                    is = true;
+                }
+            }
+//            console.log(arr_is);
+            if(arr_is.length < 2 && is){
+                console.log('sure');
+                for (var k in join) {
+                    if(join[k][4] != 5){
+                        join[k][5] = 'disabled';
                     }
                 }
             }
-//            if(arr_is.length < 2){
-//                console.log('hi');
-//                for (var k in join) {
-//                    if(join[k][4] != 5){
-//                        join[k][5] = 'disabled';
-//                    }
-//                }
-//            }
-//            console.log(join);
+            console.log(join);
 //            this.join_usrs = after;
         },deep : true},
     },
