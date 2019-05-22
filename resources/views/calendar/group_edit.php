@@ -104,7 +104,7 @@
         <label v-bind:for="'g_f_'+d[0]"><div style="margin:5px;">
             <div style="width:80%;display:inline-block;">{{d[1]}}</div>
             <div style="width:15%;display:inline-block;text-align:right;">
-                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_facility" v-bind:id="'g_f_'+d[0]">
+                <input type="checkbox"　v-bind:value="d[0]" v-model="arr_facility" v-bind:id="'g_f_'+d[0]" v-bind:disabled="d[5]">
             </div></div></label>
     </template>
     </div>
@@ -204,37 +204,34 @@ var content = new Vue({
             }
             this.join_usrs = after;
         },deep : true},
-        join_facility: { handler: function (after, before) {
+        arr_facility: { handler: function (after, before) {
             var arr_is = [];
             var i = 0;
             var join = [];
             var is = false;
             for (var k in this.arr_facility) {
                 for (var i2=0; this.join_facility.length > i2; i2++) {
-                    
-                    
                     if(this.join_facility[i2][0] == this.arr_facility[k]){
                         if(this.join_facility[i2][4] != 5){
-                            arr_is[i] = true;
+                            arr_is[i] = this.join_facility[i2][0];
                             i++;
                         }
-                        join[k] = this.join_facility[i2];
-                        join[k][5] = null;
                     }
                     is = true;
                 }
             }
-//            console.log(arr_is);
-            if(arr_is.length < 2 && is){
-                console.log('sure');
-                for (var k in join) {
-                    if(join[k][4] != 5){
-                        join[k][5] = 'disabled';
-                    }
+            for (var i in this.group_facility) {
+                if(this.group_facility[i]){
+                    join[i] = this.group_facility[i];
+                    join[i][5] = null;
                 }
             }
-            console.log(join);
-//            this.join_usrs = after;
+            for (var i=0; arr_is.length > i; i++) {
+                if(join[arr_is[i]]){
+                    join[arr_is[i]][5] = 'disabled';
+                }
+            }
+//            this.group_facility = join;
         },deep : true},
     },
   methods : {
@@ -279,6 +276,17 @@ function groupChange(group_id,oauth){
     $.get('/Calendar/Get/groupUsr/'+group_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
         if(oauth == 'facility_owner'){
+            var arr_is = [];
+            var is = 0;
+            for (var i=0; content.arr_facility.length > i; i++) {
+                if(res[content.arr_facility[i]] && res[content.arr_facility[i]][4] != 5){
+                    res[content.arr_facility[i]][5] = null;
+                    arr_is[is] = content.arr_facility[i];
+                }
+            }
+            if(arr_is.length == 1){
+                res[arr_is[0]][5] = 'disabled';
+            }
             content.group_facility = res;
         }else{
             content.group_usrs = res;
