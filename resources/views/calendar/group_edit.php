@@ -126,7 +126,8 @@
 </div>
 <br>
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
-
+<?=$join_usrs?>
+<?=$join_facility?>
 <script>
 var content = new Vue({
   el: '#content',
@@ -163,22 +164,23 @@ var content = new Vue({
         return this.join_usrs.slice().reverse();
     },
     reverseFacility() {
-        var join = [];
-        var i = 0;
-        for (var k in this.arr_facility) {
-            if(this.group_facility[this.arr_facility[k]]){
-                join[i] = this.group_facility[this.arr_facility[k]];
-                i++;
-            } else {  //nor group_facility but join_facility has. it should show
-                for (var i2=0; this.join_facility.length > i2; i2++) {
-                    if(this.join_facility[i2][0] == this.arr_facility[k]){
-                        join[i] = this.join_facility[i2];
-                        i++;
-                    }
-                }
-            }
-        }
-        this.join_facility = join;
+//        var join = [];
+//        var i = 0;
+//        for (var k in this.arr_facility) {
+//            if(this.group_facility[this.arr_facility[k]]){
+//                join[i] = this.group_facility[this.arr_facility[k]];
+//                i++;
+//            } else {  //nor group_facility but join_facility has. it should show
+//                for (var i2=0; this.join_facility.length > i2; i2++) {
+//                    if(this.join_facility[i2][0] == this.arr_facility[k]){
+//                        join[i] = this.join_facility[i2];
+//                        i++;
+//                    }
+//                }
+//                console.log(this.join_facility);
+//            }
+//        }
+//        this.join_facility = join;
         return this.join_facility.slice().reverse();
     },
   },
