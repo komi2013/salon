@@ -29,21 +29,24 @@ class ScheduleController extends Controller {
         $obj = DB::select("SELECT * FROM r_group_relate WHERE usr_id = :usr_id ", $bind);
         $arr_group = [];
         $group_ids = [];
+        $usr_ids = [];
         foreach ($obj as $d) {
            $group_ids[] = $d->group_id;
            $arr['group_id'] = $d->group_id;
            $arr['owner_flg'] = $d->owner_flg;
+           $arr['priority'] = $d->priority;
            $arr_group[$d->group_id] = $arr;
+           $usr_ids[] = $d->usr_id;
+           $arr_usr[$d->usr_id] = $arr;
         }
         $obj = DB::table('m_group')->whereIn("group_id", $group_ids)->get();
         foreach ($obj as $d) {
            $arr_group[$d->group_id]['group_name'] = $d->group_name;
-           $arr_group[$d->group_id]['category_id'] = $d->category_id;
            $arr_group[$d->group_id]['selected'] = '';
         }
         $group_radio = 2;
         $group_ids = json_encode($group_ids);
-        $usrs = [(int)$usr_id];
+
         $a['todo'] = '';
         $a['title'] = '';
         $a['usr_id'] = '';
@@ -107,19 +110,30 @@ class ScheduleController extends Controller {
                     $a['public_title'] = $d->public_title;
                     $date = date('Y-m-d', strtotime($d->time_start));
                     $mydata = 2;
-                } else {
-                    $usrs[] = $d->usr_id;
                 }
+                $usr_ids[] = $d->usr_id;
+            }
+            $obj = DB::table('t_usr')->whereIn("usr_id", $usr_ids)->get();
+            foreach ($obj as $d) {
+                if ( isset($arr_usr[$d->usr_id]) ) {
+                    $arr_usr[$d->usr_id]['usr_name_mb'] = $d->usr_name_mb;
+                    $arr_usr[$d->usr_id]['oauth_type'] = $d->oauth_type;
+                } else { // not group but schedule
+                    $arr['usr_name_mb'] = $d->usr_name_mb;
+                    $arr['oauth_type'] = $d->oauth_type;
+                    $arr_usr[$d->usr_id] = $arr;
+                }
+
             }
 
         }
         
         $request->session()->put('view_time', date('Y-m-d H:i:s'));
-        $usrs = json_encode($usrs);
+        $arr_usr = json_encode($arr_usr);
 
         return view('calendar.edit', compact('date','arr_group','group_ids','common_id',
                 'mydata','a','hour_start','hour_end','minute_start','minute_end','tags',
-                'usr_id','group_radio','usrs','public_tags'));
+                'usr_id','group_radio','arr_usr','public_tags'));
     }
 }
 

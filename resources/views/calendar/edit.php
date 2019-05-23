@@ -100,9 +100,9 @@
         <img src="/img/icon/magnifier.png" id="search" oauth="people" class="icon">
         <select class="group" id="people_group" style="height:30px;width:80%;" oauth="people">
             <option disabled>所属グループ</option>
-            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
-            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
-            <?php $i++; }}?>
+            <?php foreach($arr_group as $d){ ?>
+            <option <?=$d['priority'] == 1 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
+            <?php }?>
         </select><br>
     </div>
     <div class="joining">
@@ -124,33 +124,6 @@
     </div>
     </div>
     <br>
-    <div class="centerize">
-    <div style="width:100%;display:inline-block;">
-        <select class="group" id="facility_group" style="height:30px;width:80%;" oauth="facility">
-            <option disabled>施設カテゴリ</option>
-            <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
-            <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
-            <?php $i++; }}?>
-        </select><br>
-    </div>
-    <div class="joining">
-    <div>候補施設　全て</div>
-    <template v-for="(d,k) in group_facility">
-        <label v-bind:for="d[0]" style='margin:5px;'>
-            <div style="width:80%;display:inline-block;">{{d[1]}}</div>
-            <div style="width:10%;display:inline-block;">
-                <input type="checkbox"　v-bind:value="d" v-model="join_facility" v-bind:id="d[0]">
-            </div></label>
-    </template>
-    </div>
-    <div class="centerize">↓</div>
-    <div class="joining">
-    <template v-for="(d,k) in reverseFacility">
-        <div>{{d[1]}}</div>
-    </template>
-        <div>利用施設</div>
-    </div>
-    </div>
     <a target="_blank" v-bind:href="'/Calendar/Space/hours12/<?=$date?>/'+checkSchedule+'/'">空き時間を確認</a>
     <br>
     <div class="centerize">
@@ -163,9 +136,9 @@
         <div v-if="group_radio == 2">
         <select id="select_group" style="height:30px;width:80%;" oauth="people" >
             <option>所属グループ</option>
-            <?php foreach($arr_group as $d){ if($d['category_id'] == 0){ ?>
+            <?php foreach($arr_group as $d){ ?>
             <option <?=$d['selected']?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
-            <?php }}?>
+            <?php }?>
         </select>
         <br>
         </div>
@@ -202,7 +175,7 @@ var group_radio = '<?=$group_radio?>';
 var date = '<?=$date?>';
 var common_id = '<?=$common_id?>';
 var usr_id = '<?=$usr_id?>';
-var usrs = <?=$usrs?>;
+var arr_usr = <?=$arr_usr?>;
 var content = new Vue({
   el: '#content',
   data: {
@@ -298,53 +271,50 @@ function groupChange(group_id,oauth){
     $.get('/Calendar/Get/groupUsr/'+group_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
         if(oauth == 'facility'){
-            var join = [];
-            var i = 0;
-            var duplicate = false;
-            for (var k in usrs) {
-                if(res[k]){
-                    for (var i3=0; content.join_facility.length > i3; i3++) {
-                        if(content.join_facility[i3]['usr_id'] == res[k]['usr_id']){
-                            duplicate = true;
-                        }
-                    }
-                    if(!duplicate){
-                       join[i] = res[k];
-                    }
-                    i++;
-                }
-            }
-            for (var i3=0; content.join_facility.length > i3; i3++) {
-                join.push(content.join_facility[i3]);
-            }
-            content.group_facility = res;
-            content.join_facility = join;
+//            var join = [];
+//            var i = 0;
+//            var duplicate = false;
+//            for (var k in usrs) {
+//                if(res[k]){
+//                    for (var i3=0; content.join_facility.length > i3; i3++) {
+//                        if(content.join_facility[i3]['usr_id'] == res[k]['usr_id']){
+//                            duplicate = true;
+//                        }
+//                    }
+//                    if(!duplicate){
+//                       join[i] = res[k];
+//                    }
+//                    i++;
+//                }
+//            }
+//            for (var i3=0; content.join_facility.length > i3; i3++) {
+//                join.push(content.join_facility[i3]);
+//            }
+//            content.group_facility = res;
+//            content.join_facility = join;
         }else{
-            var join = [];
-            var i = 0;
-            var duplicate = false;
-            console.log(res);
-            console.log(usrs);
-            for (var k in usrs) {
-                console.log(k);
-                if(res[usrs[k]]){
-                    
-                    for (var i3=0; content.join_usrs.length > i3; i3++) {
-                        if(content.join_usrs[i3]['usr_id'] == res[usrs[k]]['usr_id']){
-                            duplicate = true;
-                        }
-                    }
-                    if(!duplicate){
-                       join[i] = res[usrs[k]];
-                    }
-                    i++;
-                }
-            }
-            for (var i3=0; content.join_usrs.length > i3; i3++) {
-                join.push(content.join_usrs[i3]);
-            }
+//            var join = [];
+//            var i = 0;
+//            var duplicate = false;
+//            for (var k in arr_usr) {
+//                console.log(k);
+//                if(res[k]){
+//                    for (var i3=0; content.join_usrs.length > i3; i3++) {
+//                        if(content.join_usrs[i3]['usr_id'] == res[usrs[k]]['usr_id']){
+//                            duplicate = true;
+//                        }
+//                    }
+//                    if(!duplicate){
+//                       join[i] = res[usrs[k]];
+//                    }
+//                    i++;
+//                }
+//            }
+//            for (var i3=0; content.join_usrs.length > i3; i3++) {
+//                join.push(content.join_usrs[i3]);
+//            }
             content.group_usrs = res;
-            content.join_usrs = join;
+//            content.join_usrs = join;
         }
         
     });
