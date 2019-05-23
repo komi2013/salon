@@ -39,10 +39,10 @@ class GetController extends Controller {
             } else if ($oauth_type == 'people' AND $d->oauth_type != 5) {
                 $arr_usr[$d->usr_id][0] = $d->usr_id;
                 $arr_usr[$d->usr_id][1] = $d->usr_name_mb;                
-            } else if ($oauth_type == 'facility_owner') {
-                $arr_usr[$d->usr_id][0] = $d->usr_id;
-                $arr_usr[$d->usr_id][1] = $d->usr_name_mb;
-                $arr_usr[$d->usr_id][4] = $d->oauth_type;
+//            } else if ($oauth_type == 'facility_owner') {
+//                $arr_usr[$d->usr_id][0] = $d->usr_id;
+//                $arr_usr[$d->usr_id][1] = $d->usr_name_mb;
+//                $arr_usr[$d->usr_id][4] = $d->oauth_type;
             }
         }
         $arr = [];

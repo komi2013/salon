@@ -77,10 +77,12 @@ class GroupController extends Controller {
                 $join_usrs[$i][5] = null;
                 $arr_is[] = $d[0];
                 $i++;
+            } else {
+                $join_facility[$i2] = $d;
+                $join_facility[$i2][5] = null;
+                $i2++;
             }
-            $join_facility[$i2] = $d;
-            $join_facility[$i2][5] = null;
-            $i2++;
+
         }
         if (count($arr_is) == 1) {
             $join_usrs[$arr_is[0]][5] = 'disabled';

@@ -91,7 +91,7 @@
     <br>
     <div class="centerize">
     <div style="width:100%;display:inline-block;">
-        <select class="group" id="facility_group" style="height:30px;width:80%;" oauth="facility_owner">
+        <select class="group" id="facility_group" style="height:30px;width:80%;" oauth="facility">
             <option disabled>施設カテゴリ</option>
             <?php $i = 0; foreach($arr_group as $d){ if($d['category_id'] == 1){ ?>
             <option <?=$i == 0 ? 'selected' : '' ?> value="<?=$d['group_id']?>"><?=$d['group_name']?></option>
@@ -126,9 +126,11 @@
 </div>
 <br>
 <div id="ad_right"><iframe src="/htm/ad_right/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
-<?=$join_usrs?>
-<?=$join_facility?>
+
+
 <script>
+var join_usrs1 = <?=$join_usrs?>;
+var join_facility1 = <?=$join_facility?>;
 var content = new Vue({
   el: '#content',
   data: {
@@ -159,28 +161,33 @@ var content = new Vue({
                 }
             }
         }
-
         this.join_usrs = join;
         return this.join_usrs.slice().reverse();
     },
     reverseFacility() {
-//        var join = [];
-//        var i = 0;
-//        for (var k in this.arr_facility) {
-//            if(this.group_facility[this.arr_facility[k]]){
-//                join[i] = this.group_facility[this.arr_facility[k]];
-//                i++;
-//            } else {  //nor group_facility but join_facility has. it should show
-//                for (var i2=0; this.join_facility.length > i2; i2++) {
-//                    if(this.join_facility[i2][0] == this.arr_facility[k]){
-//                        join[i] = this.join_facility[i2];
-//                        i++;
-//                    }
-//                }
-//                console.log(this.join_facility);
-//            }
-//        }
-//        this.join_facility = join;
+        console.log(this.group_facility);
+        if(join_facility1){
+            this.join_facility = join_facility1;
+            join_facility1 = null;
+            return this.join_facility.slice().reverse();
+        }
+        var join = [];
+        var i = 0;
+        for (var k in this.arr_facility) {
+            if(this.group_facility[this.arr_facility[k]]){
+                join[i] = this.group_facility[this.arr_facility[k]];
+                i++;
+            } else {  //nor group_facility but join_facility has. it should show
+                for (var i2=0; this.join_facility.length > i2; i2++) {
+                    if(this.join_facility[i2][0] == this.arr_facility[k]){
+                        join[i] = this.join_facility[i2];
+                        i++;
+                    }
+                }
+            }
+        }
+        
+        this.join_facility = join;
         return this.join_facility.slice().reverse();
     },
   },
@@ -204,9 +211,16 @@ var content = new Vue({
                     }
                 }
             }
-            this.join_usrs = after;
+            if(join_usrs1){
+//                this.join_usrs = join_usrs1;
+//                join_usrs1 = null;
+//                console.log('within initial');
+            } else {
+                this.join_usrs = after; 
+                console.log('watch after');
+            }
         },deep : true},
-        arr_facility: { handler: function (after, before) {
+/*        arr_facility: { handler: function (after, before) {
             var arr_is = [];
             var i = 0;
             var join = [];
@@ -235,6 +249,7 @@ var content = new Vue({
             }
 //            this.group_facility = join;
         },deep : true},
+*/
     },
   methods : {
 //    checkIs : function(){
@@ -268,7 +283,7 @@ $('#search').click(function(){
     });
 });
 groupChange($('#people_group option:selected').val(),'people');
-groupChange($('#facility_group option:selected').val(),'facility_owner');
+groupChange($('#facility_group option:selected').val(),'facility');
 $('.group').change(function(){
     var group_id = $(this).val();
     var oauth = $(this).attr('oauth');
@@ -277,20 +292,20 @@ $('.group').change(function(){
 function groupChange(group_id,oauth){
     $.get('/Calendar/Get/groupUsr/'+group_id +'/'+oauth+'/',{},function(){},"json")
     .always(function(res){
-        if(oauth == 'facility_owner'){
-            var arr_is = [];
-            var is = 0;
-            for (var i=0; content.arr_facility.length > i; i++) {
-                if(res[content.arr_facility[i]] && res[content.arr_facility[i]][4] != 5){
-                    res[content.arr_facility[i]][5] = null;
-                    arr_is[is] = content.arr_facility[i];
-                }
-            }
-            if(arr_is.length == 1){
-                res[arr_is[0]][5] = 'disabled';
-            }
+        if(oauth == 'facility'){
+//            var arr_is = [];
+//            var is = 0;
+//            for (var i=0; content.arr_facility.length > i; i++) {
+//                if(res[content.arr_facility[i]] && res[content.arr_facility[i]][4] != 5){
+//                    res[content.arr_facility[i]][5] = null;
+//                    arr_is[is] = content.arr_facility[i];
+//                }
+//            }
+//            if(arr_is.length == 1){
+//                res[arr_is[0]][5] = 'disabled';
+//            }
             content.group_facility = res;
-        }else{
+        }else if(oauth == 'people'){
             content.group_usrs = res;
         }
     });
