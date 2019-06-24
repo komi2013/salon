@@ -30,6 +30,7 @@ class ScheduleController extends Controller {
         $arr_group = [];
         $group_ids = [];
         $usr_ids = [];
+        $arr_usr = [];
         foreach ($obj as $d) {
            $group_ids[] = $d->group_id;
            $arr['group_id'] = $d->group_id;
