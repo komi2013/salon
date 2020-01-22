@@ -193,21 +193,23 @@ var content = new Vue({
   },
     watch: { // after, before same value somehow
         join_usrs: { handler: function (after, before) {
+            var join = [];
             var arr_is = [];
             var is = false;
             var i2 = 0;
-            for (var i=0; after.length > i; i++) {
-                if(after[i][2]){
+            for (var i=0; this.join_usrs.length > i; i++) {
+                if(this.join_usrs[i][2]){
                     arr_is[i2] = true;
                     i2++;
                 }
                 is = true;
-                after[i][4] = null;
+                join[i] = this.join_usrs[i];
+                join[i][4] = null;
             }
-            if(arr_is.length < 2 && is){
-                for (var i=0; after.length > i; i++) {
-                    if(after[i][2]){
-                        after[i][4] = 'disabled';
+            if(arr_is.length == 1 && is){
+                for (var i=0; join.length > i; i++) {
+                    if(join[i][2]){
+                        join[i][4] = 'disabled';
                     }
                 }
             }
@@ -216,9 +218,11 @@ var content = new Vue({
 //                join_usrs1 = null;
 //                console.log('within initial');
             } else {
-                this.join_usrs = after; 
-                console.log('watch after');
+                this.join_usrs = join; 
+                
             }
+            console.log(join_usrs1);
+            console.log('watch after');
         },deep : true},
 /*        arr_facility: { handler: function (after, before) {
             var arr_is = [];
