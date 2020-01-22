@@ -47,9 +47,14 @@ $('#search').click(function(){
     location.href = '/Salon/Search/index/'+$('#tag_name').val()+'/';
 });
 </script>
-
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-57298122-1"></script>
 <script>
-  $(function(){ $(function(){ ga('send', 'pageview'); }); });
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-57298122-1');
 </script>
+
 </body>
 </html>
